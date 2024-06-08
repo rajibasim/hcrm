@@ -131,85 +131,88 @@
                                     </p>
                                 </a>
                             </li>
-                           
-                            <li class="nav-item {{ Request::is("admin/masterdata*") ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ Request::is("admin/masterdata*") ? 'active' : '' }}">
-                                    <i class="nav-icon fa fa-list-ul"></i>
-                                    <p>
-                                        Master Data
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                @can('fine-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('fine.index') }}" class="nav-link {{ Request::is("admin/masterdata/fine*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Fine Master</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('service-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('service.index') }}" class="nav-link {{ Request::is("admin/masterdata/service*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Service</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('activity-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('activity.index') }}" class="nav-link {{ Request::is("admin/masterdata/activity*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Activity</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('entry-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('entry.index') }}" class="nav-link {{ Request::is("admin/masterdata/entry*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Entry</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                            </li>
-                            <li class="nav-item {{ Request::is("admin/usersrole*") ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ Request::is("admin/usersrole*") ? 'active' : '' }}">
-                                    <i class="nav-icon fa fa-list-ul"></i>
-                                    <p>
-                                        Manage User
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                @can('user_view')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('user.index') }}" class="nav-link {{ Request::is("admin/usersrole/user*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>User</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('role_view')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('role.index') }}" class="nav-link {{ Request::is("admin/usersrole/role*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Role</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                            </li>
+                            @canany(['unit_view', 'role_view'])
+                                <li class="nav-item {{ Request::is("admin/masterdata*") ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ Request::is("admin/masterdata*") ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-list-ul"></i>
+                                        <p>
+                                            Master Data
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    @can('unit_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('unit.index') }}" class="nav-link {{ Request::is("admin/masterdata/unit*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Unit Master</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('beat_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('beat.index') }}" class="nav-link {{ Request::is("admin/masterdata/beat*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Beat</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('area_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('area.index') }}" class="nav-link {{ Request::is("admin/masterdata/area*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Area</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('entry-list')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('entry.index') }}" class="nav-link {{ Request::is("admin/masterdata/entry*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Entry</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                </li>
+                            @endcan
+                            @canany(['user_view', 'role_view'])
+                                <li class="nav-item {{ Request::is("admin/usersrole*") ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ Request::is("admin/usersrole*") ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-list-ul"></i>
+                                        <p>
+                                            Manage User
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    @can('user_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('user.index') }}" class="nav-link {{ Request::is("admin/usersrole/user*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>User</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('role_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('role.index') }}" class="nav-link {{ Request::is("admin/usersrole/role*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Role</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                </li>
+                            @endcan
                             <li class="nav-item {{ Request::is("admin/adminpark*") ? 'menu-open' : '' }}">
                                 <a href="#" class="nav-link {{ Request::is("admin/adminpark*") ? 'active' : '' }}">
                                     <i class="nav-icon fa fa-list-ul"></i>

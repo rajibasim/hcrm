@@ -38,13 +38,11 @@ Route::group(['middleware' => ['auth']], function() {
     ### master data start
     Route::group(['prefix' => '/admin/masterdata'], function () {
         // unit Master
-        Route::resource('unit', UnitController::class);
-        // product Master
-        Route::resource('product', ProductController::class);
-        // beat Master
-        Route::resource('beat', BeatController::class);
-        // area Master
-        Route::resource('area', AreaController::class);
+        Route::resource('unit', App\Http\Controllers\Admin\masterdata\UnitController::class);
+        // Beat Master
+        Route::resource('beat', App\Http\Controllers\Admin\masterdata\BeatController::class);
+        // Area Master
+        Route::resource('area', App\Http\Controllers\Admin\masterdata\AreaController::class);
         // customer Master
         Route::resource('customer', CustomerController::class);
     });

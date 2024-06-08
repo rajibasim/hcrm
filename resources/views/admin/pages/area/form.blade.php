@@ -44,7 +44,7 @@
                 <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
               </div>
               <!-- /.card-header -->
-              <form id="dataForm" method="post" action="{{ isset($details->id) && $details->id ? route('fine.update', $details->id) : route('fine.store') }}" autocomplete="off" enctype="multipart/form-data">
+              <form id="dataForm" method="post" action="{{ isset($details->id) && $details->id ? route('area.update', $details->id) : route('area.store') }}" autocomplete="off" enctype="multipart/form-data">
                 @if(isset($details->id) && $details->id)
                   <input name="_method" type="hidden" value="PATCH">
                 @endif
@@ -54,15 +54,22 @@
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Fine Name</label>
-                        <input type="text" class="form-control" placeholder="Fine Name" name="name" value="{{ old('name', isset($details->name) && $details->name ? $details->name : '') }}" required="">
+                        <label>Beat</label>
+                        <select class="form-control select2" name="beat_id" id="beat_id" required="">
+                          <option value="">Select Beat</option>
+                          @if($beat) && !$beat->isEmpty())
+                            @foreach ( $beat as $key => $res )
+                              <option value="{{ $res->id }}" {{ isset($details->beat_id) && $details->beat_id == $res->id ? 'selected' : '' }}>{{ $res->beat }}</option>
+                            @endforeach
+                          @endif
+                        </select>
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Price</label>
-                        <input type="text" class="form-control" placeholder="Price" name="price" value="{{ old('price', isset($details->price) && $details->price ? $details->price : '') }}" required="">
+                        <label>Area</label>
+                        <input type="text" class="form-control" placeholder="Area" name="area" value="{{ old('area', isset($details->area) && $details->area ? $details->area : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -75,19 +82,12 @@
                         </select>
                       </div>
                     </div>
-                    <div class="col-sm-12">
-                      <!-- text input -->
-                      <div class="form-group">
-                        <label>Description</label>
-                        <input type="text" class="form-control" placeholder="Description" name="description" value="{{ old('description', isset($details->description) && $details->description ? $details->description : '') }}" required="">
-                      </div>
-                    </div>
                   </div>
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary">Submit</button>
-                  <a href="{{ route('fine.index') }}" class="btn btn-danger">Reset</a>
+                  <a href="{{ route('area.index') }}" class="btn btn-danger">Reset</a>
                 </div>
               </form>
             </div>
@@ -117,16 +117,12 @@ $(document).ready(function() {
 
     $('#dataForm').validate({
       rules: {
-          name: {
+          beat_id: {
             required: true,
           },
-          price: {
+          area: {
             required: true,
-            number: true
           },
-          description: {
-            required: true,
-          }, 
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {

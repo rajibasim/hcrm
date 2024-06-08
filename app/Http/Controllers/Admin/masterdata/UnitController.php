@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin\masterdata;
+namespace App\Http\Controllers\Admin\masterdata;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,26 +9,27 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\FineMaster;
+use App\Models\Unit;
 use Validator;
 
-class FineMasterController extends Controller{
+class UnitController extends Controller{
 
     public function __construct(){
-        $this->middleware('permission:fine-list|fine-create|fine-edit|fine-delete', ['only' => ['index','store']]);
-        $this->middleware('permission:fine-create', ['only' => ['create','store']]);
-        $this->middleware('permission:fine-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:fine-delete', ['only' => ['destroy']]);
-        $this->title = 'Fine Master';
-        $this->slug = route('fine.index');
+        $this->middleware('permission:unit_list|unit_create|unit_edit|unit_delete', ['only' => ['index','store']]);
+        $this->middleware('permission:unit_create', ['only' => ['create','store']]);
+        $this->middleware('permission:unit_edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:unit_delete', ['only' => ['destroy']]);
+        $this->title = 'Unit';
+        $this->slug = route('unit.index');
     }
 
+    ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response = DB::table('fine_masters')->where('deleted_at', '=', NULL);
-        if($request->name){
-            $response = $response->where('name', 'like', '%' . $request->name . '%');
-            $serach_data['name'] = $request->name;
+        $response = DB::table('units')->where('deleted_at', '=', NULL);
+        if($request->unit){
+            $response = $response->where('unit', 'like', '%' . $request->unit . '%');
+            $serach_data['unit'] = $request->unit;
         }
 
         $rows = $response->paginate(20);
@@ -49,9 +50,10 @@ class FineMasterController extends Controller{
             ),
         );
         
-        return view('admin.pages.fine.list', compact('rows', 'metadata'));
+        return view('admin.pages.unit.list', compact('rows', 'metadata'));
     }
 
+    ### Create View
     public function create(Request $request){
         $metadata = array(
             'page_title' => $this->title . ' Add',
@@ -72,32 +74,38 @@ class FineMasterController extends Controller{
                 )
             ),
         );
-        return view('admin.pages.fine.form', compact('metadata'));
+        return view('admin.pages.unit.form', compact('metadata'));
     }
 
+    ### Store Data
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
-            'name' => 'required|unique:fine_masters,name',
-            'price' => 'required',
-            'description' => 'required',
+            'unit' => 'required|unique:units,unit',
         ]); 
 
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
-            $data['slug'] = Str::slug($data['name']);
-            FineMaster::query()->create($data);
-            $flash_data = array(
-                'status' => 'success',
-                'message' => $this->title.' successfully created.',
-            );
+            $created = Unit::query()->create($data);
+            if($created){
+                $flash_data = array(
+                    'status' => 'success',
+                    'message' => $this->title.' successfully created.',
+                );
+            }else{
+                $flash_data = array(
+                    'status' => 'error',
+                    'message' => 'Something went wrong, try again.',
+                );
+            }
 
             Session::put('flash_data', $flash_data); 
             return redirect($this->slug);
         }
     }
 
+    ### Edit View
     public function edit($id){
         $metadata = array(
             'page_title' => $this->title . ' Edit',
@@ -119,42 +127,56 @@ class FineMasterController extends Controller{
             ),
         );
         
-        $details = FineMaster::find($id);
-        return view('admin.pages.fine.form', compact('details', 'metadata'));
+        $details = Unit::find($id);
+        return view('admin.pages.unit.form', compact('details', 'metadata'));
     }
 
+    ### Update Data
     public function update(Request $request, $id){
         $validator = Validator::make($request->all(), [ 
-            'name' => 'required|unique:fine_masters,name,' . $id,
-            'price' => 'required',
-            'description' => 'required',
+            'unit' => 'required|unique:units,unit,' . $id,
         ]); 
 
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
-            $data['slug'] = Str::slug($data['name']);
-            $update = FineMaster::find($id);
-            $update->update($data);
-            $flash_data = array(
-                'status' => 'success',
-                'message' => $this->title.' successfully updated.',
-            );
-
+            $update = Unit::find($id);
+            $update = $update->update($data);
+            if($update){
+                $flash_data = array(
+                    'status' => 'success',
+                    'message' => $this->title.' successfully updated.',
+                );
+            }else{
+                $flash_data = array(
+                    'status' => 'error',
+                    'message' => 'Something went wrong, try again.',
+                );
+            }
+        
             Session::put('flash_data', $flash_data); 
             return redirect($this->slug);
         }
     }
 
+    ### Delete Data
     public function destroy($id){
-        $delete = FineMaster::find($id);
+        $delete = Unit::find($id);
         $delete = $delete->delete();
 
-        $flash_data = array(
-            'status' => 'success',
-            'message' => $this->title.' successfully deleted.',
-        );
+        if($delete){
+            $flash_data = array(
+                'status' => 'success',
+                'message' => $this->title.' successfully deleted.',
+            );
+        }else{
+            $flash_data = array(
+                'status' => 'error',
+                'message' => 'Something went wrong, try again.',
+            );
+        }
+        
         Session::put('flash_data', $flash_data); 
         return redirect($this->slug);
     }

@@ -52,7 +52,7 @@
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
                     <div class="col-10">
-                      <input type="text" class="form-control" placeholder="Name" name="name" value="{{ isset($serach_data['name']) && $serach_data['name'] ? $serach_data['name'] : '' }}">
+                      <input type="text" class="form-control" placeholder="Unit" name="unit" value="{{ isset($serach_data['unit']) && $serach_data['unit'] ? $serach_data['unit'] : '' }}">
                     </div>
                     <div class="col-1">
                       <button type="submit" class="btn btn-block btn-primary">Search</button>
@@ -77,11 +77,11 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('fine-create')
+              @can('unit_create')
                 <div class="card-header">
                   <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
                     <div class="float-right">
-                        <a href="{{ route('fine.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
+                        <a href="{{ route('unit.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -92,8 +92,7 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Price</th>
+                      <th>Unit</th>
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -102,17 +101,16 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                     <tr> 
-                      <td>{{ $res->name }}</td>
-                      <td>{{ $res->price }}</td>
+                      <td>{{ $res->unit }}</td>
                       <td>{{ $res->is_active == 1 ? 'Active' : 'In-Active' }}</td>
                       <td style="width: 100px;">
-                        @can('fine-create')
-                          <a href="{{ route('fine.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
+                        @can('unit_create')
+                          <a href="{{ route('unit.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
                             <i class="fas fa-edit" aria-hidden="true"></i>
                           </a>
                         @endcan
-                        @can('fine-delete')
-                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('fine.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
+                        @can('unit_delete')
+                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('unit.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
                               <input name="_method" type="hidden" value="DELETE">
                               <a id="{{ $res->id }}" href="javascript:void(0);" class="btn btn-danger btn-sm single" data-toggle="tooltip" data-placement="top" title="Delete">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
@@ -125,7 +123,7 @@
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="4">No record found.</td>
+                      <td colspan="3">No record found.</td>
                     </tr>
                   @endif
                   </tbody>
@@ -158,15 +156,7 @@ $(document).ready(function() {
         $flash_data = Session::pull('flash_data');
       @endphp
       toastr.{{ $flash_data['status'] }}("{{ $flash_data['message'] }}");
-    @endif
-
-    var clicked = false;
-    $(".checkall").on("click", function() {
-        $(".checkbox").prop("checked", !clicked);
-        clicked = !clicked;
-        this.innerHTML = clicked ? 'Deselect' : 'Select';
-    });
-    
+    @endif    
 
     $(".single").on("click", function(e) {
         e.preventDefault();
