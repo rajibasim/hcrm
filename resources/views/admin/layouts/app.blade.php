@@ -143,6 +143,16 @@
                                     @can('unit_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
+                                                <a href="{{ route('category.index') }}" class="nav-link {{ Request::is("admin/masterdata/category*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Category</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('unit_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
                                                 <a href="{{ route('unit.index') }}" class="nav-link {{ Request::is("admin/masterdata/unit*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
                                                     <p>Unit Master</p>

@@ -39,6 +39,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => '/admin/masterdata'], function () {
         // unit Master
         Route::resource('unit', App\Http\Controllers\Admin\masterdata\UnitController::class);
+        // category Master
+        Route::resource('category', App\Http\Controllers\Admin\masterdata\CategoryController::class);
         // Beat Master
         Route::resource('beat', App\Http\Controllers\Admin\masterdata\BeatController::class);
         // Area Master

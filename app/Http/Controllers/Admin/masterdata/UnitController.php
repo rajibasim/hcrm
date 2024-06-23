@@ -15,7 +15,7 @@ use Validator;
 class UnitController extends Controller{
 
     public function __construct(){
-        $this->middleware('permission:unit_list|unit_create|unit_edit|unit_delete', ['only' => ['index','store']]);
+        $this->middleware('permission:unit_view|unit_create|unit_edit|unit_delete', ['only' => ['index','store']]);
         $this->middleware('permission:unit_create', ['only' => ['create','store']]);
         $this->middleware('permission:unit_edit', ['only' => ['edit','update']]);
         $this->middleware('permission:unit_delete', ['only' => ['destroy']]);
@@ -87,6 +87,7 @@ class UnitController extends Controller{
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
+            $data['created_by'] = created_by();
             $created = Unit::query()->create($data);
             if($created){
                 $flash_data = array(
@@ -141,6 +142,7 @@ class UnitController extends Controller{
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
+            $data['updated_by'] = updated_by();
             $update = Unit::find($id);
             $update = $update->update($data);
             if($update){

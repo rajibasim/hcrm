@@ -57,6 +57,10 @@ class PermissionGroupSeeder extends Seeder
                 'name' => 'return_entry',
                 'label' => 'Return Entry'
             ],
+            [
+                'name' => 'category',
+                'label' => 'Category'
+            ],
         ];
 
         $counterForUUID = 1;

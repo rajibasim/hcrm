@@ -15,7 +15,7 @@ use Validator;
 class BeatController extends Controller{
 
     public function __construct(){
-        $this->middleware('permission:beat_list|beat_create|beat_edit|beat_delete', ['only' => ['index','store']]);
+        $this->middleware('permission:beat_view|beat_create|beat_edit|beat_delete', ['only' => ['index','store']]);
         $this->middleware('permission:beat_create', ['only' => ['create','store']]);
         $this->middleware('permission:beat_edit', ['only' => ['edit','update']]);
         $this->middleware('permission:beat_delete', ['only' => ['destroy']]);
@@ -87,6 +87,7 @@ class BeatController extends Controller{
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
+            $data['created_by'] = created_by();
             $created = Beat::query()->create($data);
             if($created){
                 $flash_data = array(
@@ -141,6 +142,7 @@ class BeatController extends Controller{
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
+            $data['updated_by'] = updated_by();
             $update = Beat::find($id);
             $update = $update->update($data);
             if($update){
