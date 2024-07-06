@@ -45,8 +45,11 @@ Route::group(['middleware' => ['auth']], function() {
         Route::resource('beat', App\Http\Controllers\Admin\masterdata\BeatController::class);
         // Area Master
         Route::resource('area', App\Http\Controllers\Admin\masterdata\AreaController::class);
-        // customer Master
-        Route::resource('customer', CustomerController::class);
+        // Product Master
+        Route::resource('product', App\Http\Controllers\Admin\masterdata\ProductController::class);
+        // Sales person Master
+        Route::resource('sales-person', App\Http\Controllers\Admin\masterdata\SalesPerson::class);
+        
     });
     ### master data end
     ### user level & permission

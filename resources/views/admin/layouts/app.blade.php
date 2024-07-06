@@ -140,7 +140,7 @@
                                             <i class="fas fa-angle-left right"></i>
                                         </p>
                                     </a>
-                                    @can('unit_view')
+                                    @can('category_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
                                                 <a href="{{ route('category.index') }}" class="nav-link {{ Request::is("admin/masterdata/category*") ? 'active' : '' }}">
@@ -180,19 +180,19 @@
                                             </li>
                                         </ul>
                                     @endcan
-                                    @can('entry-list')
+                                    @can('product_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
-                                                <a href="{{ route('entry.index') }}" class="nav-link {{ Request::is("admin/masterdata/entry*") ? 'active' : '' }}">
+                                                <a href="{{ route('product.index') }}" class="nav-link {{ Request::is("admin/masterdata/product*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
-                                                    <p>Entry</p>
+                                                    <p>Product</p>
                                                 </a>
                                             </li>
                                         </ul>
                                     @endcan
                                 </li>
                             @endcan
-                            @canany(['user_view', 'role_view'])
+                            @canany(['user_view', 'role_view', 'sales_person_view'])
                                 <li class="nav-item {{ Request::is("admin/usersrole*") ? 'menu-open' : '' }}">
                                     <a href="#" class="nav-link {{ Request::is("admin/usersrole*") ? 'active' : '' }}">
                                         <i class="nav-icon fa fa-list-ul"></i>
@@ -221,126 +221,39 @@
                                             </li>
                                         </ul>
                                     @endcan
+                                    @can('sales_person_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('sales-person.index') }}" class="nav-link {{ Request::is("admin/usersrole/sales-person*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Sales Person</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
                                 </li>
                             @endcan
-                            <li class="nav-item {{ Request::is("admin/adminpark*") ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ Request::is("admin/adminpark*") ? 'active' : '' }}">
-                                    <i class="nav-icon fa fa-list-ul"></i>
-                                    <p>
-                                        Manage Park
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                @can('park-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('parks.index') }}" class="nav-link {{ Request::is("admin/adminpark/parks*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Park</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('employee-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('employee.index') }}" class="nav-link {{ Request::is("admin/adminpark/employee*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Employee</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('notice-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('notice.index') }}" class="nav-link {{ Request::is("admin/adminpark/notice*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Notice</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('gallery-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('gallery.index') }}" class="nav-link {{ Request::is("admin/adminpark/gallery*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Gallery</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('park_entry-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('park_entry.index') }}" class="nav-link {{ Request::is("admin/adminpark/park_entry*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Entry</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('park_activity-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('park_activity.index') }}" class="nav-link {{ Request::is("admin/adminpark/park_activity*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Activity</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('park_service-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('park_service.index') }}" class="nav-link {{ Request::is("admin/adminpark/park_service*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Service</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('park_gate-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('park_gate.index') }}" class="nav-link {{ Request::is("admin/adminpark/park_gate*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Gate</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                            </li>
-                            <li class="nav-item {{ Request::is("admin/adminbooking*") ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ Request::is("admin/adminbooking*") ? 'active' : '' }}">
-                                    <i class="nav-icon fa fa-list-ul"></i>
-                                    <p>
-                                        Manage Booking
-                                        <i class="fas fa-angle-left right"></i>
-                                    </p>
-                                </a>
-                                @can('ticket-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('ticket.index') }}" class="nav-link {{ Request::is("admin/adminbooking/ticket*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Ticket</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                                @can('customer-list')
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('customer.index') }}" class="nav-link {{ Request::is("admin/adminbooking/customer*") ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Customer</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                @endcan
-                            </li>
+                            @canany(['customer_view'])
+                                <li class="nav-item {{ Request::is("admin/managecstomer*") ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ Request::is("admin/managecstomer*") ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-list-ul"></i>
+                                        <p>
+                                            Manage Customer
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    @can('customer_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('customer.index') }}" class="nav-link {{ Request::is("admin/managecstomer/customer*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Customer</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                </li>
+                            @endcan
                         </ul>
                     </nav>
                     <!-- /.sidebar-menu -->

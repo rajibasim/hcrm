@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->integer('beat_id')->nullable()->constrained('beats')->cascadeOnDelete();
-            $table->integer('area_id')->nullable()->constrained('areas')->cascadeOnDelete();
+            $table->foreignId('beat_id')->nullable()->constrained('beats')->cascadeOnDelete();
+            $table->foreignId('area_id')->nullable()->constrained('areas')->cascadeOnDelete();
             $table->string('store_name')->nullable();
             $table->string('proprietor_name')->nullable();
             $table->string('addrsss')->nullable();
