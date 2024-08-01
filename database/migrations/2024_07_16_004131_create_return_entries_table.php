@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('return_entries', function (Blueprint $table) {
             $table->id();
+            $table->string('bill_no')->nullable();
+            $table->date('return_date')->nullable();
+            $table->foreignId('sales_person_id')->nullable()->constrained('sales_person')->cascadeOnDelete();
             $table->foreignId('beat_id')->nullable()->constrained('beats')->cascadeOnDelete();
             $table->foreignId('area_id')->nullable()->constrained('areas')->cascadeOnDelete();
-            $table->string('store_name')->nullable();
-            $table->string('proprietor_name')->nullable();
-            $table->string('address')->nullable();
-            $table->bigInteger('mobile')->nullable();
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->cascadeOnDelete();
+            $table->string('note')->nullable();
+            $table->decimal('total_amount', 10,2)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->tinyInteger('is_active')->default('1')->comment('1 => Active , 0 => In-Active');
@@ -33,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('return_entries');
     }
 };

@@ -32,11 +32,6 @@ Route::group(['middleware' => ['auth']], function() {
 
     ### master data start
     Route::group(['prefix' => '/admin/masterdata'], function () {
-        Route::resource('users', UserController::class);
-    });
-
-    ### master data start
-    Route::group(['prefix' => '/admin/masterdata'], function () {
         // unit Master
         Route::resource('unit', App\Http\Controllers\Admin\masterdata\UnitController::class);
         // category Master
@@ -46,51 +41,34 @@ Route::group(['middleware' => ['auth']], function() {
         // Area Master
         Route::resource('area', App\Http\Controllers\Admin\masterdata\AreaController::class);
         // Product Master
-        Route::resource('product', App\Http\Controllers\Admin\masterdata\ProductController::class);
+        Route::resource('product', App\Http\Controllers\Admin\masterdata\ProductController::class);  
         // Sales person Master
-        Route::resource('sales-person', App\Http\Controllers\Admin\masterdata\SalesPerson::class);
-        
+        Route::resource('sales-person', App\Http\Controllers\Admin\masterdata\SalesPersonController::class);      
     });
     ### master data end
-    ### user level & permission
+    ### user level & permission & 
     Route::group(['prefix' => '/admin/usersrole'], function () {
         // user route
         Route::resource('user', App\Http\Controllers\Admin\user\UserController::class);
-        // sales person route
-        //Route::resource('user', App\Http\Controllers\Admin\user\UserController::class);
         // role route
         Route::resource('role', App\Http\Controllers\Admin\user\RoleController::class);
     });
     ### user level & permission
-    ### park
-    Route::group(['prefix' => '/admin/adminpark'], function () {
-        // Park Master
-        Route::resource('parks', ParkController::class);
-        // Park employee Master
-        Route::resource('employee', EmployeeController::class);
-        // Park gallery Master
-        Route::resource('gallery', GalleryController::class);
-        // Park notice Master
-        Route::resource('notice', NoticeController::class);
-        // Park activity
-        Route::resource('park_activity', ParkActivityController::class);
-        // Park service
-        Route::resource('park_service', ParkServiceController::class);
-        // Park Gate
-        Route::resource('park_gate', ParkGateController::class);
-         // Park Gate
-        Route::resource('park_entry', ParkEntryController::class);
+   
+    ### Customer
+    Route::group(['prefix' => '/admin/managecustomer'], function () {
+        // customer
+        Route::resource('customer', App\Http\Controllers\Admin\customer\CustomerController::class);
     });
-    ### park
-     ### park
-    Route::group(['prefix' => '/admin/adminbooking'], function () {
-        // Ticket Booking
-        Route::resource('ticket', TicketController::class);
-        Route::get('ticket/print/{id}', [TicketController::class, 'print'])->name('print');
-        // Customer
-        Route::resource('customer', CustomerController::class);
+    ### Customer
+    ### Return Entry
+    Route::group(['prefix' => '/admin/managereturnentry'], function () {
+        // return
+        Route::resource('return-entry', App\Http\Controllers\Admin\return_entry\ReturnEntryController::class);
+        // Product return
+        Route::resource('return-product', App\Http\Controllers\Admin\return_entry\ReturnProductController::class);
     });
-    ### park
+    ### Return Entry
 });
 
 

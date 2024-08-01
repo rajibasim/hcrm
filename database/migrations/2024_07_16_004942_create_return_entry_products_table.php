@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('return_entry_products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('beat_id')->nullable()->constrained('beats')->cascadeOnDelete();
-            $table->foreignId('area_id')->nullable()->constrained('areas')->cascadeOnDelete();
-            $table->string('store_name')->nullable();
-            $table->string('proprietor_name')->nullable();
-            $table->string('address')->nullable();
-            $table->bigInteger('mobile')->nullable();
+            $table->foreignId('return_entry_id')->nullable()->constrained('return_entries')->cascadeOnDelete();
+            $table->date('return_date')->nullable();
+            $table->foreignId('product_id')->nullable()->constrained('products')->cascadeOnDelete();
+            $table->decimal('product_qty', 10,2)->nullable();
+            $table->decimal('product_unit_price', 10,2)->nullable();
+            $table->decimal('sub_total', 10,2)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->tinyInteger('is_active')->default('1')->comment('1 => Active , 0 => In-Active');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('return_entry_products');
     }
 };

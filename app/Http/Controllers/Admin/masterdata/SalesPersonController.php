@@ -11,37 +11,37 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\Category;
 use App\Models\Unit;
-use App\Models\Product;
+use App\Models\SalesPerson;
 use Validator;
 
-class ProductController extends Controller{
+class SalesPersonController extends Controller{
 
     public function __construct(){
-        $this->middleware('permission:product_view|product_create|product_edit|product_delete', ['only' => ['index','store']]);
-        $this->middleware('permission:product_create', ['only' => ['create','store']]);
-        $this->middleware('permission:product_edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:product_delete', ['only' => ['destroy']]);
-        $this->title = 'Product';
-        $this->slug = route('product.index');
+        $this->middleware('permission:sales_person_view|sales_person_create|sales_person_edit|sales_person_delete', ['only' => ['index','store']]);
+        $this->middleware('permission:sales_person_create', ['only' => ['create','store']]);
+        $this->middleware('permission:sales_person_edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:sales_person_delete', ['only' => ['destroy']]);
+        $this->title = 'Sales Person';
+        $this->slug = route('sales-person.index');
     }
 
     ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response = Product::with('unit')->with('category')->where('deleted_at', '=', NULL);
+        $response = SalesPerson::where('deleted_at', '=', NULL);
         if($request->name){
             $response = $response->where('name', 'like', '%' . $request->name . '%');
             $serach_data['name'] = $request->name;
         }
 
-        if($request->unit_id){
-            $response = $response->where('unit_id', '=', $request->unit_id);
-            $serach_data['unit_id'] = $request->unit_id;
+        if($request->email){
+            $response = $response->where('email', 'like', '%' . $request->email . '%');
+            $serach_data['email'] = $request->email;
         }
 
-        if($request->category_id){
-            $response = $response->where('category_id', '=', $request->category_id);
-            $serach_data['category_id'] = $request->category_id;
+        if($request->mobile){
+            $response = $response->where('mobile', 'like', '%' . $request->mobile . '%');
+            $serach_data['mobile'] = $request->mobile;
         }
 
         $rows = $response->paginate(20);
@@ -64,7 +64,7 @@ class ProductController extends Controller{
         $unit = Unit::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('unit', 'asc')->get();
         $category = Category::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('category', 'asc')->get();
         
-        return view('admin.pages.product.list', compact('rows', 'metadata', 'unit', 'category'));
+        return view('admin.pages.sales-person.list', compact('rows', 'metadata'));
     }
 
     ### Create View
@@ -88,16 +88,14 @@ class ProductController extends Controller{
                 )
             ),
         );
-
-        $unit = Unit::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('unit', 'asc')->get();
-        $category = Category::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('category', 'asc')->get();
-        return view('admin.pages.product.form', compact('metadata', 'unit', 'category'));
+        return view('admin.pages.sales-person.form', compact('metadata'));
     }
 
     ### Store Data
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
-            'name' => 'required|unique:products,name',
+            'email' => 'required|unique:sales_person,email',
+            'mobile' => 'required|unique:sales_person,mobile',
         ]); 
 
         if ($validator->fails()) { 
@@ -105,7 +103,7 @@ class ProductController extends Controller{
         }else{
             $data = $request->all();
             $data['created_by'] = created_by();
-            $created = Product::query()->create($data);
+            $created = SalesPerson::query()->create($data);
             if($created){
                 $flash_data = array(
                     'status' => 'success',
@@ -145,16 +143,15 @@ class ProductController extends Controller{
             ),
         );
         
-        $details = Product::find($id);
-        $unit = Unit::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('unit', 'asc')->get();
-        $category = Category::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('category', 'asc')->get();
-        return view('admin.pages.product.form', compact('details', 'metadata', 'unit', 'category'));
+        $details = SalesPerson::find($id);
+        return view('admin.pages.sales-person.form', compact('details', 'metadata'));
     }
 
     ### Update Data
     public function update(Request $request, $id){
         $validator = Validator::make($request->all(), [ 
-            'name' => 'required|unique:products,name,' . $id,
+            'email' => 'required|unique:sales_person,email,' . $id,
+            'mobile' => 'required|unique:sales_person,mobile,' . $id,
         ]); 
 
         if ($validator->fails()) { 
@@ -162,7 +159,7 @@ class ProductController extends Controller{
         }else{
             $data = $request->all();
             $data['updated_by'] = updated_by();
-            $update = Product::find($id);
+            $update = Sales_person::find($id);
             $update = $update->update($data);
             if($update){
                 $flash_data = array(
@@ -183,7 +180,7 @@ class ProductController extends Controller{
 
     ### Delete Data
     public function destroy($id){
-        $delete = Product::find($id);
+        $delete = SalesPerson::find($id);
         $delete = $delete->delete();
 
         if($delete){

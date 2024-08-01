@@ -9,39 +9,39 @@
         <!-- Google Font: Source Sans Pro -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/fontawesome-free/css/all.min.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/fontawesome-free/css/all.min.css?version='.config('config.version')) }}" />
         <!-- Ionicons -->
         <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
         <!-- Tempusdominus Bootstrap 4 -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css?version='.config('config.version')) }}" />
         <!-- iCheck -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css?version='.config('config.version')) }}" />
         <!-- JQVMap -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/jqvmap/jqvmap.min.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/jqvmap/jqvmap.min.css?version='.config('config.version')) }}" />
         <!-- Theme style -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/css/adminlte.min.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/css/adminlte.min.css?version='.config('config.version')) }}" />
         <!-- overlayScrollbars -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css?version='.config('config.version')) }}" />
         <!-- Select2 -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/select2/css/select2.min.css?version='.config('app.version')) }}">
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css?version='.config('app.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/select2/css/select2.min.css?version='.config('config.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css?version='.config('config.version')) }}">
         <!-- Daterange picker -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/daterangepicker/daterangepicker.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/daterangepicker/daterangepicker.css?version='.config('config.version')) }}" />
         <!-- summernote -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.css?version='.config('app.version')) }}" />
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.css?version='.config('config.version')) }}" />
         <!-- Toastr -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css?version='.config('app.version')) }}">
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/toastr/toastr.min.css?version='.config('app.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css?version='.config('config.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/toastr/toastr.min.css?version='.config('config.version')) }}">
         <!-- DataTables -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css?version='.config('app.version')) }}">
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css?version='.config('app.version')) }}">
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css?version='.config('app.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css?version='.config('config.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css?version='.config('config.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css?version='.config('config.version')) }}">
         <!-- Ekko Lightbox -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/ekko-lightbox/ekko-lightbox.css?version='.config('app.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/ekko-lightbox/ekko-lightbox.css?version='.config('config.version')) }}">
         <!-- Date Picker CSS -->
         <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
         <!-- summernote -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.css?version='.config('app.version')) }}">
+        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.css?version='.config('config.version')) }}">
         
     </head>
     <body class="hold-transition sidebar-mini layout-fixed">
@@ -131,7 +131,7 @@
                                     </p>
                                 </a>
                             </li>
-                            @canany(['unit_view', 'role_view'])
+                            @canany(['unit_view', 'role_view', 'sales_person_view'])
                                 <li class="nav-item {{ Request::is("admin/masterdata*") ? 'menu-open' : '' }}">
                                     <a href="#" class="nav-link {{ Request::is("admin/masterdata*") ? 'active' : '' }}">
                                         <i class="nav-icon fa fa-list-ul"></i>
@@ -190,9 +190,19 @@
                                             </li>
                                         </ul>
                                     @endcan
+                                    @can('sales_person_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('sales-person.index') }}" class="nav-link {{ Request::is("admin/usersrole/sales-person*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Sales Person</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
                                 </li>
                             @endcan
-                            @canany(['user_view', 'role_view', 'sales_person_view'])
+                            @canany(['user_view', 'role_view'])
                                 <li class="nav-item {{ Request::is("admin/usersrole*") ? 'menu-open' : '' }}">
                                     <a href="#" class="nav-link {{ Request::is("admin/usersrole*") ? 'active' : '' }}">
                                         <i class="nav-icon fa fa-list-ul"></i>
@@ -221,21 +231,11 @@
                                             </li>
                                         </ul>
                                     @endcan
-                                    @can('sales_person_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('sales-person.index') }}" class="nav-link {{ Request::is("admin/usersrole/sales-person*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Sales Person</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
                                 </li>
                             @endcan
                             @canany(['customer_view'])
-                                <li class="nav-item {{ Request::is("admin/managecstomer*") ? 'menu-open' : '' }}">
-                                    <a href="#" class="nav-link {{ Request::is("admin/managecstomer*") ? 'active' : '' }}">
+                                <li class="nav-item {{ Request::is("admin/managecustomer*") ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ Request::is("admin/managecustomer*") ? 'active' : '' }}">
                                         <i class="nav-icon fa fa-list-ul"></i>
                                         <p>
                                             Manage Customer
@@ -245,9 +245,40 @@
                                     @can('customer_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
-                                                <a href="{{ route('customer.index') }}" class="nav-link {{ Request::is("admin/managecstomer/customer*") ? 'active' : '' }}">
+                                                <a href="{{ route('customer.index') }}" class="nav-link {{ Request::is("admin/managecustomer/customer*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
                                                     <p>Customer</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                </li>
+                            @endcan
+                            @canany(['return_entry_view', 'return_product_view'])
+                                <li class="nav-item {{ Request::is("admin/managereturnentry*") ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ Request::is("admin/managereturnentry*") ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-list-ul"></i>
+                                        <p>
+                                            Manage Return
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    @can('return_entry_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('return-entry.index') }}" class="nav-link {{ Request::is("admin/managereturnentry/return-entry*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Return Entry</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('return_product_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('return-product.index') }}" class="nav-link {{ Request::is("admin/managereturnentry/return-product*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Return Product</p>
                                                 </a>
                                             </li>
                                         </ul>
@@ -264,65 +295,65 @@
             <footer class="main-footer">
                 <strong>Copyright &copy; {{ date('Y') }} <a href="/dashboard">{{ config('app.name') }}</a>.</strong>
                 All rights reserved.
-                <div class="float-right d-none d-sm-inline-block"><b>Current Version</b> {{ config('app.version') }}</div>
+                <div class="float-right d-none d-sm-inline-block"><b>Current Version</b> {{ config('config.version') }}</div>
             </footer>
         </div>
         <!-- ./wrapper -->
 
         <!-- jQuery -->
-        <script src="{{ asset('admin-assets/plugins/jquery/jquery.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/jquery/jquery.min.js?version='.config('config.version')) }}"></script>
         <!-- jQuery UI 1.11.4 -->
-        <script src="{{ asset('admin-assets/plugins/jquery-ui/jquery-ui.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/jquery-ui/jquery-ui.min.js?version='.config('config.version')) }}"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
         <script>
             $.widget.bridge("uibutton", $.ui.button);
         </script>
         <!-- Bootstrap 4 -->
-        <script src="{{ asset('admin-assets/plugins/bootstrap/js/bootstrap.bundle.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/bootstrap/js/bootstrap.bundle.min.js?version='.config('config.version')) }}"></script>
         <!-- daterangepicker -->
-        <script src="{{ asset('admin-assets/plugins/moment/moment.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/daterangepicker/daterangepicker.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/moment/moment.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/daterangepicker/daterangepicker.js?version='.config('config.version')) }}"></script>
         <!-- Tempusdominus Bootstrap 4 -->
-        <script src="{{ asset('admin-assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js?version='.config('config.version')) }}"></script>
         <!-- Summernote -->
-        <script src="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.js?version='.config('config.version')) }}"></script>
         <!-- overlayScrollbars -->
-        <script src="{{ asset('admin-assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js?version='.config('config.version')) }}"></script>
         <!-- SweetAlert2 -->
-        <script src="{{ asset('admin-assets/plugins/sweetalert2/sweetalert2.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/sweetalert2/sweetalert2.min.js?version='.config('config.version')) }}"></script>
         <!-- Toastr -->
-        <script src="{{ asset('admin-assets/plugins/toastr/toastr.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/toastr/toastr.min.js?version='.config('config.version')) }}"></script>
         <!-- AdminLTE App -->
-        <script src="{{ asset('admin-assets/js/adminlte.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/js/adminlte.js?version='.config('config.version')) }}"></script>
         <!-- AdminLTE for demo purposes -->
-        <script src="{{ asset('admin-assets/js/demo.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/js/demo.js?version='.config('config.version')) }}"></script>
         <!-- jquery-validation -->
-        <script src="{{ asset('admin-assets/plugins/jquery-validation/jquery.validate.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/jquery-validation/jquery.validate.min.js?version='.config('config.version')) }}"></script>
 
         <!-- DataTables  & Plugins -->
-        <script src="{{ asset('admin-assets/plugins/datatables/jquery.dataTables.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/jszip/jszip.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/pdfmake/pdfmake.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/pdfmake/vfs_fonts.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.html5.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.print.min.js?version='.config('app.version')) }}"></script>
-        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.colVis.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables/jquery.dataTables.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-responsive/js/dataTables.responsive.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/dataTables.buttons.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/jszip/jszip.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/pdfmake/pdfmake.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/pdfmake/vfs_fonts.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.html5.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.print.min.js?version='.config('config.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/datatables-buttons/js/buttons.colVis.min.js?version='.config('config.version')) }}"></script>
         <!-- dropzonejs -->
-        <script src="{{ asset('admin-assets/plugins/dropzone/min/dropzone.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/dropzone/min/dropzone.min.js?version='.config('config.version')) }}"></script>
 
         <!-- Select2 -->
-        <script src="{{ asset('admin-assets/plugins/select2/js/select2.full.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/select2/js/select2.full.min.js?version='.config('config.version')) }}"></script>
         <!-- Ekko Lightbox -->
-        <script src="{{ asset('admin-assets/plugins/ekko-lightbox/ekko-lightbox.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/ekko-lightbox/ekko-lightbox.min.js?version='.config('config.version')) }}"></script>
         <!-- ChartJS -->
-        <script src="{{ asset('admin-assets/plugins/chart.js/Chart.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/chart.js/Chart.min.js?version='.config('config.version')) }}"></script>
         <!-- Summernote -->
-        <script src="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.js?version='.config('app.version')) }}"></script>
+        <script src="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.js?version='.config('config.version')) }}"></script>
         
         <script type="text/javascript">
         $(function () {

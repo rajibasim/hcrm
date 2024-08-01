@@ -35,12 +35,12 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                   <div class="inner">
-                    <h3>00</h3>
-                    <p>User</p>
+                    <h3>{{ $product }}</h3>
+                    <p>Product</p>
                   </div>
-                  <div class="icon">
+                  <!-- <div class="icon">
                     <i class="ion ion-bag"></i>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <!-- ./col -->
@@ -48,12 +48,12 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                   <div class="inner">
-                    <h3>00</h3>
-                    <p>User</p>
+                    <h3>{{ $product }}</h3>
+                    <p>Customer</p>
                   </div>
-                  <div class="icon">
+                  <!-- <div class="icon">
                     <i class="ion ion-ios-people"></i>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <!-- ./col -->
@@ -61,12 +61,12 @@
                 <!-- small box -->
                 <div class="small-box bg-secondary">
                   <div class="inner">
-                    <h3>00</h3>
-                    <p>User</p>
+                    <h3>{{ $qty }}</h3>
+                    <p>Return Qty</p>
                   </div>
-                  <div class="icon">
+                  <!-- <div class="icon">
                     <i class="ion ion-ios-people"></i>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <!-- ./col -->
@@ -74,12 +74,12 @@
                 <!-- small box -->
                 <div class="small-box bg-warning">
                   <div class="inner">
-                    <h3>00</h3>
-                    <p>User</p>
+                    <h3>{{ $amount }}</h3>
+                    <p>Amount</p>
                   </div>
-                  <div class="icon">
+                  <!-- <div class="icon">
                     <i class="ion ion-ios-people"></i>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>

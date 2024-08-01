@@ -2,11 +2,6 @@
 
 @section('content')
 <!-- Content Wrapper. Contains page content -->
-<style type="text/css">
-  .select2 {
-   width: 100% !important;
-  } 
-</style>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -49,63 +44,49 @@
                 <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
               </div>
               <!-- /.card-header -->
-              <form id="dataForm" method="post" action="{{ isset($details->id) && $details->id ? route('customer.update', $details->id) : route('customer.store') }}" autocomplete="off" enctype="multipart/form-data">
+              <form id="dataForm" method="post" action="{{ isset($details->id) && $details->id ? route('sales-person.update', $details->id) : route('sales-person.store') }}" autocomplete="off" enctype="multipart/form-data">
                 @if(isset($details->id) && $details->id)
                   <input name="_method" type="hidden" value="PATCH">
                 @endif
                 @csrf
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Store Name</label>
-                        <input type="text" class="form-control" placeholder="Store Name" name="store_name" value="{{ old('store_name', isset($details->store_name) && $details->store_name ? $details->store_name : '') }}" required="">
+                        <label>Name</label>
+                        <input type="text" class="form-control" placeholder="Name" name="name" value="{{ old('name', isset($details->name) && $details->name ? $details->name : '') }}" required="">
                       </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Propriter Name</label>
-                        <input type="text" class="form-control" placeholder="Propriter Name" name="proprietor_name" value="{{ old('proprietor_name', isset($details->proprietor_name) && $details->proprietor_name ? $details->proprietor_name : '') }}" required="">
+                        <label>Email</label>
+                        <input type="text" class="form-control" placeholder="Email" name="email" value="{{ old('email', isset($details->email) && $details->email ? $details->email : '') }}" required="">
                       </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Mobile</label>
                         <input type="text" class="form-control" placeholder="Mobile" name="mobile" value="{{ old('mobile', isset($details->mobile) && $details->mobile ? $details->mobile : '') }}" required="">
                       </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Beat</label>
-                        <select class="form-control select2" name="beat_id" id="beat_id" required="">
-                          <option value="">Select Beat</option>
-                          @if($beat) && !$beat->isEmpty())
-                            @foreach ( $beat as $key => $res )
-                              <option value="{{ $res->id }}" {{ isset($details->beat_id) && $details->beat_id == $res->id ? 'selected' : '' }}>{{ $res->beat }}</option>
-                            @endforeach
-                          @endif
-                        </select>
+                        <label>Alternet Mobile</label>
+                        <input type="text" class="form-control" placeholder="Alternet Mobile" name="alternet_mobile" value="{{ old('alternet_mobile', isset($details->alternet_mobile) && $details->alternet_mobile ? $details->alternet_mobile : '') }}" required="">
                       </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-9">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Area</label>
-                        <select class="form-control select2" name="area_id" id="area_id" required="">
-                          <option value="">Select Area</option>
-                          @if($area) && !$area->isEmpty())
-                            @foreach ( $area as $key => $res )
-                              <option value="{{ $res->id }}" {{ isset($details->area_id) && $details->area_id == $res->id ? 'selected' : '' }}>{{ $res->area }}</option>
-                            @endforeach
-                          @endif
-                        </select>
+                        <label>Address</label>
+                        <input type="text" class="form-control" placeholder="Address" name="address" value="{{ old('address', isset($details->address) && $details->address ? $details->address : '') }}" required="">
                       </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                       <!-- select -->
                       <div class="form-group">
                         <label>Status</label>
@@ -115,19 +96,12 @@
                         </select>
                       </div>
                     </div>
-                    <div class="col-sm-12">
-                      <!-- text input -->
-                      <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" class="form-control" placeholder="Address" name="address" value="{{ old('address', isset($details->address) && $details->address ? $details->address : '') }}" required="">
-                      </div>
-                    </div>
                   </div>
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary">Submit</button>
-                  <a href="{{ route('customer.index') }}" class="btn btn-danger">Reset</a>
+                  <a href="{{ route('sales-person.index') }}" class="btn btn-danger">Reset</a>
                 </div>
               </form>
             </div>
@@ -157,10 +131,18 @@ $(document).ready(function() {
 
     $('#dataForm').validate({
       rules: {
-          store_name: {
+          name: {
             required: true,
           },
+          email: {
+            required: true,
+            email: true,
+          },
           mobile: {
+            required: true,
+            number: true,
+          },
+          alternet_mobile: {
             required: true,
             number: true,
           },
@@ -177,23 +159,6 @@ $(document).ready(function() {
           $(element).removeClass('is-invalid');
         }
     });
-
-
-    $("#beat_id").change(function(){
-       var beat_id = $(this).val();
-       var areas = '{{ json_encode($area) }}';
-       areas = JSON.parse(areas.replace(/&quot;/g,'"'));
-       $("#area_id").select2('destroy'); 
-       var html = '<option value="">Select Area</option>';
-       $.each(areas, function (key, val) {
-          if(beat_id == val.beat_id){
-            html = html + '<option value="'+val.id+'">'+val.area+'</option>';
-          }
-       });
-       $("#area_id").html(html);
-       $("#area_id").select2({theme: 'bootstrap4'});
-    });
-
 });
 </script>
 @endsection

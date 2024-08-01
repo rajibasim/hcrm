@@ -51,16 +51,26 @@
               <div class="card-body">
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-sm-5">
-                      <!-- select -->
+                    <div class="col-3">
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Name" name="name" value="{{ isset($serach_data['name']) && $serach_data['name'] ? $serach_data['name'] : '' }}">
+                        <input type="text" class="form-control datepicker3" placeholder="Start Date" name="start_date" value="{{ isset($serach_data['start_date']) && $serach_data['start_date'] ? $serach_data['start_date'] : '' }}">
                       </div>
                     </div>
-                    <div class="col-sm-5">
-                      <!-- select -->
+                    <div class="col-3">
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Phone" name="phone" value="{{ isset($serach_data['phone']) && $serach_data['phone'] ? $serach_data['phone'] : '' }}">
+                        <input type="text" class="form-control datepicker3" placeholder="End Date" name="end_date" value="{{ isset($serach_data['end_date']) && $serach_data['end_date'] ? $serach_data['end_date'] : '' }}">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <select class="form-control select2" name="product_id" id="product_id">
+                          <option value="">Select Product</option>
+                          @if(isset($product)) && !$product->isEmpty())
+                            @foreach ( $product as $key => $res )
+                              <option value="{{ $res->id }}" {{ isset($serach_data['product_id']) && $serach_data['product_id'] == $res->id ? 'selected' : '' }}>{{ $res->name }}</option>
+                            @endforeach
+                          @endif
+                        </select>
                       </div>
                     </div>
                     <div class="col-1">
@@ -86,26 +96,19 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('customer_view')
-                <div class="card-header">
-                  <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
-                    <div class="float-right">
-                        <a href="{{ route('customer.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
-                          <i class="fa fa-plus" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-              @endcan
+              <div class="card-header">
+                <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
+              </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Proprietor Name</th>
-                      <th>Mobile</th>
-                      <th>Beat</th>
-                      <th>Area</th>
+                      <th>Date</th>
+                      <th>Product Name</th>
+                      <th>Quantity</th>
+                      <th>Unit Price</th>
+                      <th>Sub Total</th>
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -114,35 +117,32 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                     <tr> 
-                      <td>{{ $res->store_name }}</td>
-                      <td>{{ $res->proprietor_name }}</td>
-                      <td>{{ $res->mobile }}</td>
-                      <td>{{ $res->beat->beat }}</td>
-                      <td>{{ $res->area->area }}</td>
+                      <td>{{ date('d/m/Y', strtotime($res->return_date)) }}</td>
+                      <td>{{ $res->product->name }}</td>
+                      <td>{{ $res->product_qty }}</td>
+                      <td>{{ $res->product_unit_price }}</td>
+                      <td>{{ $res->sub_total }}</td>
                       <td>{{ $res->is_active == 1 ? 'Active' : 'In-Active' }}</td>
                       <td style="width: 100px;">
-                        @can('customer_edit')
-                          <a href="{{ route('customer.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        @can('return_product_edit')
+                          <a href="{{ route('return-entry.show',$res->return_entry_id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
                           </a>
-                        @endcan
-                        @can('customer_delete')
-                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('customer.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
-                              <input name="_method" type="hidden" value="DELETE">
-                              <a id="{{ $res->id }}" href="javascript:void(0);" class="btn btn-danger btn-sm single" data-toggle="tooltip" data-placement="top" title="Delete">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                              </a>
-                            @csrf
-                          </form>
                         @endcan
                       </td>
                     </tr>
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="5">No record found.</td>
+                      <td colspan="7">No record found.</td>
                     </tr>
                   @endif
+                  <tr> 
+                      <td colspan="2">Total Qty</td>
+                      <td>{{ $product_qty }}</td>
+                      <td>Total Amount</td>
+                      <td colspan="3">{{ $sub_total }}</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -173,34 +173,7 @@ $(document).ready(function() {
         $flash_data = Session::pull('flash_data');
       @endphp
       toastr.{{ $flash_data['status'] }}("{{ $flash_data['message'] }}");
-    @endif
-
-    var clicked = false;
-    $(".checkall").on("click", function() {
-        $(".checkbox").prop("checked", !clicked);
-        clicked = !clicked;
-        this.innerHTML = clicked ? 'Deselect' : 'Select';
-    });
-    
-
-    $(".single").on("click", function(e) {
-        e.preventDefault();
-        var delete_url = $(this).attr('href');
-        Swal.fire({
-          title: 'Are you sure you want to delete this?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            var id = $(this).attr('id');
-            $('form#deleteForm'+id).submit();
-          }
-        })
-    });
+    @endif    
 });
 </script>
 @endsection

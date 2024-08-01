@@ -51,17 +51,14 @@
               <div class="card-body">
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-sm-5">
-                      <!-- select -->
-                      <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Name" name="name" value="{{ isset($serach_data['name']) && $serach_data['name'] ? $serach_data['name'] : '' }}">
-                      </div>
+                    <div class="col-4">
+                      <input type="text" class="form-control" placeholder="Name" name="name" value="{{ isset($serach_data['name']) && $serach_data['name'] ? $serach_data['name'] : '' }}">
                     </div>
-                    <div class="col-sm-5">
-                      <!-- select -->
-                      <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Phone" name="phone" value="{{ isset($serach_data['phone']) && $serach_data['phone'] ? $serach_data['phone'] : '' }}">
-                      </div>
+                    <div class="col-3">
+                      <input type="email" class="form-control" placeholder="Email" name="email" value="{{ isset($serach_data['email']) && $serach_data['email'] ? $serach_data['email'] : '' }}">
+                    </div>
+                    <div class="col-3">
+                      <input type="number" class="form-control" placeholder="Mobile" name="mobile" value="{{ isset($serach_data['mobile']) && $serach_data['mobile'] ? $serach_data['mobile'] : '' }}">
                     </div>
                     <div class="col-1">
                       <button type="submit" class="btn btn-block btn-primary">Search</button>
@@ -86,11 +83,11 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('customer_view')
+              @can('sales_person_create')
                 <div class="card-header">
                   <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
                     <div class="float-right">
-                        <a href="{{ route('customer.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
+                        <a href="{{ route('sales-person.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -102,10 +99,9 @@
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Proprietor Name</th>
+                      <th>Email</th>
                       <th>Mobile</th>
-                      <th>Beat</th>
-                      <th>Area</th>
+                      <th>Address</th>
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -114,20 +110,19 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                     <tr> 
-                      <td>{{ $res->store_name }}</td>
-                      <td>{{ $res->proprietor_name }}</td>
+                      <td>{{ $res->name }}</td>
+                      <td>{{ $res->email }}</td>
                       <td>{{ $res->mobile }}</td>
-                      <td>{{ $res->beat->beat }}</td>
-                      <td>{{ $res->area->area }}</td>
+                      <td>{{ $res->address }}</td>
                       <td>{{ $res->is_active == 1 ? 'Active' : 'In-Active' }}</td>
                       <td style="width: 100px;">
-                        @can('customer_edit')
-                          <a href="{{ route('customer.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
+                        @can('sales_person_create')
+                          <a href="{{ route('sales-person.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
                             <i class="fas fa-edit" aria-hidden="true"></i>
                           </a>
                         @endcan
-                        @can('customer_delete')
-                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('customer.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
+                        @can('sales_person_delete')
+                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('sales-person.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
                               <input name="_method" type="hidden" value="DELETE">
                               <a id="{{ $res->id }}" href="javascript:void(0);" class="btn btn-danger btn-sm single" data-toggle="tooltip" data-placement="top" title="Delete">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
@@ -140,7 +135,7 @@
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="5">No record found.</td>
+                      <td colspan="6">No record found.</td>
                     </tr>
                   @endif
                   </tbody>
@@ -173,15 +168,7 @@ $(document).ready(function() {
         $flash_data = Session::pull('flash_data');
       @endphp
       toastr.{{ $flash_data['status'] }}("{{ $flash_data['message'] }}");
-    @endif
-
-    var clicked = false;
-    $(".checkall").on("click", function() {
-        $(".checkbox").prop("checked", !clicked);
-        clicked = !clicked;
-        this.innerHTML = clicked ? 'Deselect' : 'Select';
-    });
-    
+    @endif    
 
     $(".single").on("click", function(e) {
         e.preventDefault();
@@ -196,8 +183,8 @@ $(document).ready(function() {
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
-            var id = $(this).attr('id');
-            $('form#deleteForm'+id).submit();
+              var id = $(this).attr('id');
+              $('form#deleteForm'+id).submit();
           }
         })
     });

@@ -7,54 +7,47 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
- * Class Customer
+ * Class SalesPerson
  *
  * @property int $id
- * @property int $beat_id
- * @property int $area_id
- * @property string $store_name
- * @property string $proprietor_name
- * @property string $addrsss
- * @property bigInt $mobile
+ * @property string $name
+ * @property string $email
+ * @property bigInteger $mobile
+ * @property bigInteger $alternet_mobile
+ * @property string $address
+ * @property string $id_prove_type
+ * @property string $id_prove
  * @property int $created_by
  * @property int $updated_by
  * @property bool $is_active
  *
  * @package App\Models
  */
-class Customer extends Model implements Auditable{
+class SalesPerson extends Model implements Auditable{
     use HasFactory, SoftDeletes;
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = 'customers';
+    protected $table = 'sales_person';
 
     protected $casts = [
         'is_active' => 'bool'
     ];
 
     protected $fillable = [
-		'beat_id',
-		'area_id',
-		'store_name',
-		'proprietor_name',
-		'address',
+    	'name',
+		'email',
 		'mobile',
+		'alternet_mobile',
+		'address',
+		'id_prove_type',
+		'id_prove',
         'created_by',
         'updated_by',
         'is_active',
     ];
-
-    public function area(): BelongsTo{
-        return $this->belongsTo(Area::class, 'area_id');
-    }
-
-    public function beat(): BelongsTo{
-        return $this->belongsTo(Beat::class, 'beat_id');
-    }
 }

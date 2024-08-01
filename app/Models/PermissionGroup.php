@@ -23,10 +23,6 @@ class PermissionGroup extends Model implements Auditable{
     protected $keyType = 'string';
 
     function groupPermissions($group_id){
-        if(Auth::user()->id == config('config.super_admin_id')){
-           return $groupPermissions = Permission::where('group_id', '=', $group_id)->get();
-        }else{
-           return $groupPermissions = Permission::where('group_id', '=', $group_id)->Where('label', 'not like', "%Delete%")->get();
-        }
+        return $groupPermissions = Permission::where('group_id', '=', $group_id)->get();
     }
 }

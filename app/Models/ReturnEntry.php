@@ -13,38 +13,42 @@ use Illuminate\Database\Eloquent\Builder;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
- * Class Customer
+ * Class ReturnEntry
  *
  * @property int $id
+ * @property string $bill_no
+ * @property date $return_date
+ * @property int $sales_person_id
  * @property int $beat_id
  * @property int $area_id
- * @property string $store_name
- * @property string $proprietor_name
- * @property string $addrsss
- * @property bigInt $mobile
+ * @property int $customer_id
+ * @property string $note
+ * @property decimal $total_amount
  * @property int $created_by
  * @property int $updated_by
  * @property bool $is_active
  *
  * @package App\Models
  */
-class Customer extends Model implements Auditable{
+class ReturnEntry extends Model implements Auditable{
     use HasFactory, SoftDeletes;
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = 'customers';
+    protected $table = 'return_entries';
 
     protected $casts = [
         'is_active' => 'bool'
     ];
 
     protected $fillable = [
+    	'bill_no',
+		'return_date',
+		'sales_person_id',
 		'beat_id',
 		'area_id',
-		'store_name',
-		'proprietor_name',
-		'address',
-		'mobile',
+		'customer_id',
+		'note',
+		'total_amount',
         'created_by',
         'updated_by',
         'is_active',
@@ -56,5 +60,13 @@ class Customer extends Model implements Auditable{
 
     public function beat(): BelongsTo{
         return $this->belongsTo(Beat::class, 'beat_id');
+    }
+
+    public function customer(): BelongsTo{
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function sales_person(): BelongsTo{
+        return $this->belongsTo(SalesPerson::class, 'sales_person_id');
     }
 }
