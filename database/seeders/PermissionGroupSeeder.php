@@ -65,6 +65,10 @@ class PermissionGroupSeeder extends Seeder
                 'name' => 'return_product',
                 'label' => 'Return Product'
             ],
+            [
+                'name' => 'bill_entry',
+                'label' => 'Bill Entry'
+            ],
         ];
 
         $counterForUUID = 1;

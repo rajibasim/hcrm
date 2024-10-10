@@ -67,6 +67,8 @@ Route::group(['middleware' => ['auth']], function() {
         Route::resource('return-entry', App\Http\Controllers\Admin\return_entry\ReturnEntryController::class);
         // Product return
         Route::resource('return-product', App\Http\Controllers\Admin\return_entry\ReturnProductController::class);
+        // bill
+        Route::resource('bill-entry', App\Http\Controllers\Admin\return_entry\BillEntryController::class);
     });
     ### Return Entry
 });

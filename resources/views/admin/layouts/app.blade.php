@@ -283,6 +283,16 @@
                                             </li>
                                         </ul>
                                     @endcan
+                                    @can('bill_entry_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('bill-entry.index') }}" class="nav-link {{ Request::is("admin/managereturnentry/bill-entry*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Bill Entry</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
                                 </li>
                             @endcan
                         </ul>
