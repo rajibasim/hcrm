@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Session;
 use App\Models\User;
 use Hash;
-use App\Models\Customer;
+//use App\Models\Customer;
 use App\Models\Product;
 use App\Models\SalesPerson;
 use App\Models\ReturnEntry;
@@ -24,9 +24,10 @@ class DashboardController extends Controller{
         if(Auth::check()){
 
             $product = Product::where('deleted_at', '=', NULL)->count();
-            $customer = Customer::where('deleted_at', '=', NULL)->count();
+            //$customer = Customer::where('deleted_at', '=', NULL)->count();
             $qty = ReturnEntryProduct::where('deleted_at', '=', NULL)->sum('product_qty');
             $amount = ReturnEntryProduct::where('deleted_at', '=', NULL)->sum('sub_total');
+            $customer = [];
             return view('admin.pages.dashboard.dashboard', compact('metadata', 'product', 'customer', 'qty', 'amount'));
         }
         $error_responce = array(
