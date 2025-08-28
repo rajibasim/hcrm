@@ -131,7 +131,7 @@
                                     </p>
                                 </a>
                             </li>
-                            @canany(['unit_view', 'role_view', 'sales_person_view'])
+                            @canany(['status_view', 'sales_person_view'])
                                 <li class="nav-item {{ Request::is("admin/masterdata*") ? 'menu-open' : '' }}">
                                     <a href="#" class="nav-link {{ Request::is("admin/masterdata*") ? 'active' : '' }}">
                                         <i class="nav-icon fa fa-list-ul"></i>
@@ -140,56 +140,16 @@
                                             <i class="fas fa-angle-left right"></i>
                                         </p>
                                     </a>
-                                    @can('category_view')
+                                    @can('status_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
-                                                <a href="{{ route('category.index') }}" class="nav-link {{ Request::is("admin/masterdata/category*") ? 'active' : '' }}">
+                                                <a href="{{ route('status.index') }}" class="nav-link {{ Request::is("admin/masterdata/status*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
-                                                    <p>Category</p>
+                                                    <p>Status</p>
                                                 </a>
                                             </li>
                                         </ul>
-                                    @endcan
-                                    @can('unit_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('unit.index') }}" class="nav-link {{ Request::is("admin/masterdata/unit*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Unit Master</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
-                                    @can('beat_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('beat.index') }}" class="nav-link {{ Request::is("admin/masterdata/beat*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Beat</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
-                                    @can('area_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('area.index') }}" class="nav-link {{ Request::is("admin/masterdata/area*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Area</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
-                                    @can('product_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('product.index') }}" class="nav-link {{ Request::is("admin/masterdata/product*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Product</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
+                                    @endcan    
                                     @can('sales_person_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
@@ -248,47 +208,6 @@
                                                 <a href="{{ route('customer.index') }}" class="nav-link {{ Request::is("admin/managecustomer/customer*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
                                                     <p>Customer</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
-                                </li>
-                            @endcan
-                            @canany(['return_entry_view', 'return_product_view'])
-                                <li class="nav-item {{ Request::is("admin/managereturnentry*") ? 'menu-open' : '' }}">
-                                    <a href="#" class="nav-link {{ Request::is("admin/managereturnentry*") ? 'active' : '' }}">
-                                        <i class="nav-icon fa fa-list-ul"></i>
-                                        <p>
-                                            Manage Return
-                                            <i class="fas fa-angle-left right"></i>
-                                        </p>
-                                    </a>
-                                    @can('return_entry_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('return-entry.index') }}" class="nav-link {{ Request::is("admin/managereturnentry/return-entry*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Return Entry</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
-                                    @can('return_product_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('return-product.index') }}" class="nav-link {{ Request::is("admin/managereturnentry/return-product*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Return Product</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan
-                                    @can('bill_entry_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('bill-entry.index') }}" class="nav-link {{ Request::is("admin/managereturnentry/bill-entry*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Bill Entry</p>
                                                 </a>
                                             </li>
                                         </ul>

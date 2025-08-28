@@ -26,22 +26,6 @@ class PermissionGroupSeeder extends Seeder
                 'label' => 'Role'
             ],
             [
-                'name' => 'unit',
-                'label' => 'Unit'
-            ],
-            [
-                'name' => 'product',
-                'label' => 'Product'
-            ],
-            [
-                'name' => 'beat',
-                'label' => 'Beat'
-            ],
-            [
-                'name' => 'area',
-                'label' => 'Area'
-            ],
-            [
                 'name' => 'customer',
                 'label' => 'Customer'
             ],
@@ -50,25 +34,17 @@ class PermissionGroupSeeder extends Seeder
                 'label' => 'Sales Person'
             ],
             [
-                'name' => 'report',
-                'label' => 'Report'
-            ],
-            [
-                'name' => 'return_entry',
-                'label' => 'Return Entry'
-            ],
-            [
-                'name' => 'category',
-                'label' => 'Category'
-            ],
-            [
-                'name' => 'return_product',
-                'label' => 'Return Product'
-            ],
-            [
                 'name' => 'bill_entry',
                 'label' => 'Bill Entry'
             ],
+            [
+                'name' => 'status',
+                'label' => 'Status'
+            ],
+            [
+                'name' => 'report',
+                'label' => 'Report'
+            ]
         ];
 
         $counterForUUID = 1;

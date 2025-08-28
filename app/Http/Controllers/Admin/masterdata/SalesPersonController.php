@@ -61,9 +61,7 @@ class SalesPersonController extends Controller{
                 )
             ),
         );
-        $unit = Unit::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('unit', 'asc')->get();
-        $category = Category::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('category', 'asc')->get();
-        
+       
         return view('admin.pages.sales-person.list', compact('rows', 'metadata'));
     }
 

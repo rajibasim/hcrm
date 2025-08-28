@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('beat_id')->nullable()->constrained('beats')->cascadeOnDelete();
-            $table->foreignId('area_id')->nullable()->constrained('areas')->cascadeOnDelete();
-            $table->string('store_name')->nullable();
-            $table->string('proprietor_name')->nullable();
+            $table->string('party_name')->nullable();
+            $table->bigInteger('phone_no')->nullable();
+            $table->string('party_code')->nullable();
             $table->string('address')->nullable();
-            $table->bigInteger('mobile')->nullable();
+            $table->string('beat')->nullable();
+            $table->string('party_channel')->nullable();
+            $table->string('channel')->nullable();
+            $table->string('hul_code')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->tinyInteger('is_active')->default('1')->comment('1 => Active , 0 => In-Active');
@@ -27,6 +29,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

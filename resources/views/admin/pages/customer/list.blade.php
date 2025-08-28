@@ -51,16 +51,28 @@
               <div class="card-body">
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Name" name="name" value="{{ isset($serach_data['name']) && $serach_data['name'] ? $serach_data['name'] : '' }}">
+                        <input type="text" class="form-control" placeholder="Party Name" name="party_name" value="{{ isset($serach_data['party_name']) && $serach_data['party_name'] ? $serach_data['party_name'] : '' }}">
                       </div>
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Phone" name="phone" value="{{ isset($serach_data['phone']) && $serach_data['phone'] ? $serach_data['phone'] : '' }}">
+                        <input type="text" class="form-control" placeholder="Party Code" name="party_code" value="{{ isset($serach_data['party_code']) && $serach_data['party_code'] ? $serach_data['party_code'] : '' }}">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- select -->
+                      <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Phone No" name="phone_no" value="{{ isset($serach_data['phone_no']) && $serach_data['phone_no'] ? $serach_data['phone_no'] : '' }}">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- select -->
+                      <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Beat" name="beat" value="{{ isset($serach_data['beat']) && $serach_data['beat'] ? $serach_data['beat'] : '' }}">
                       </div>
                     </div>
                     <div class="col-1">
@@ -101,11 +113,11 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Proprietor Name</th>
-                      <th>Mobile</th>
+                      <th>Party Name</th>
+                      <th>Party Code</th>
+                      <th>Phone No</th>
                       <th>Beat</th>
-                      <th>Area</th>
+                      <th>Channel</th>
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -114,11 +126,11 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                     <tr> 
-                      <td>{{ $res->store_name }}</td>
-                      <td>{{ $res->proprietor_name }}</td>
-                      <td>{{ $res->mobile }}</td>
-                      <td>{{ $res->beat->beat }}</td>
-                      <td>{{ $res->area->area }}</td>
+                      <td>{{ $res->party_name }}</td>
+                      <td>{{ $res->party_code }}</td>
+                      <td>{{ $res->phone_no }}</td>
+                      <td>{{ $res->beat }}</td>
+                      <td>{{ $res->channel }}</td>
                       <td>{{ $res->is_active == 1 ? 'Active' : 'In-Active' }}</td>
                       <td style="width: 100px;">
                         @can('customer_edit')

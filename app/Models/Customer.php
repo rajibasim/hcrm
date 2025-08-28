@@ -16,16 +16,19 @@ use OwenIt\Auditing\Contracts\Auditable;
  * Class Customer
  *
  * @property int $id
- * @property int $beat_id
- * @property int $area_id
- * @property string $store_name
- * @property string $proprietor_name
- * @property string $addrsss
- * @property bigInt $mobile
+ * @property string $party_name
+ * @property bigInt $phone_no
+ * @property string $party_code
+ * @property string $beat
+ * @property text $address
+ * @property text $party_channel
+ * @property string channel
+ * @property string hul_code
  * @property int $created_by
  * @property int $updated_by
  * @property bool $is_active
  *
+
  * @package App\Models
  */
 class Customer extends Model implements Auditable{
@@ -39,22 +42,16 @@ class Customer extends Model implements Auditable{
     ];
 
     protected $fillable = [
-		'beat_id',
-		'area_id',
-		'store_name',
-		'proprietor_name',
-		'address',
-		'mobile',
+		'party_name',
+        'phone_no',
+        'party_code',
+        'beat',
+        'address',
+        'party_channel',
+        'channel',
+        'hul_code',
         'created_by',
         'updated_by',
         'is_active',
     ];
-
-    public function area(): BelongsTo{
-        return $this->belongsTo(Area::class, 'area_id');
-    }
-
-    public function beat(): BelongsTo{
-        return $this->belongsTo(Beat::class, 'beat_id');
-    }
 }

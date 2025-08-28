@@ -59,50 +59,57 @@
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Store Name</label>
-                        <input type="text" class="form-control" placeholder="Store Name" name="store_name" value="{{ old('store_name', isset($details->store_name) && $details->store_name ? $details->store_name : '') }}" required="">
+                        <label>Party Name</label>
+                        <input type="text" class="form-control" placeholder="Party Name" name="party_name" value="{{ old('party_name', isset($details->party_name) && $details->party_name ? $details->party_name : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Propriter Name</label>
-                        <input type="text" class="form-control" placeholder="Propriter Name" name="proprietor_name" value="{{ old('proprietor_name', isset($details->proprietor_name) && $details->proprietor_name ? $details->proprietor_name : '') }}" required="">
+                        <label>Phone No</label>
+                        <input type="text" class="form-control" placeholder="Phone No" name="phone_no" value="{{ old('phone_no', isset($details->phone_no) && $details->phone_no ? $details->phone_no : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Mobile</label>
-                        <input type="text" class="form-control" placeholder="Mobile" name="mobile" value="{{ old('mobile', isset($details->mobile) && $details->mobile ? $details->mobile : '') }}" required="">
+                        <label>Party Code</label>
+                        <input type="text" class="form-control" placeholder="Party Code" name="party_code" value="{{ old('party_code', isset($details->party_code) && $details->party_code ? $details->party_code : '') }}" required="">
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" class="form-control" placeholder="Address" name="address" value="{{ old('address', isset($details->address) && $details->address ? $details->address : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Beat</label>
-                        <select class="form-control select2" name="beat_id" id="beat_id" required="">
-                          <option value="">Select Beat</option>
-                          @if($beat) && !$beat->isEmpty())
-                            @foreach ( $beat as $key => $res )
-                              <option value="{{ $res->id }}" {{ isset($details->beat_id) && $details->beat_id == $res->id ? 'selected' : '' }}>{{ $res->beat }}</option>
-                            @endforeach
-                          @endif
-                        </select>
+                        <input type="text" class="form-control" placeholder="Beat" name="beat" value="{{ old('beat', isset($details->beat) && $details->beat ? $details->beat : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Area</label>
-                        <select class="form-control select2" name="area_id" id="area_id" required="">
-                          <option value="">Select Area</option>
-                          @if($area) && !$area->isEmpty())
-                            @foreach ( $area as $key => $res )
-                              <option value="{{ $res->id }}" {{ isset($details->area_id) && $details->area_id == $res->id ? 'selected' : '' }}>{{ $res->area }}</option>
-                            @endforeach
-                          @endif
-                        </select>
+                        <label>Party Channel</label>
+                        <input type="text" class="form-control" placeholder="Party Channel" name="party_channel" value="{{ old('party_channel', isset($details->party_channel) && $details->party_channel ? $details->party_channel : '') }}" required="">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>Channel</label>
+                        <input type="text" class="form-control" placeholder="Channel" name="channel" value="{{ old('channel', isset($details->channel) && $details->channel ? $details->channel : '') }}" required="">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>HUL Code</label>
+                        <input type="text" class="form-control" placeholder="HUL Code" name="hul_code" value="{{ old('hul_code', isset($details->hul_code) && $details->hul_code ? $details->hul_code : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -113,13 +120,6 @@
                           <option value="1" {{ isset($details->is_active) && $details->is_active == 1 ? 'selected' : '' }}>Active</option>
                           <option value="0" {{ isset($details->is_active) && $details->is_active == 0 ? 'selected' : '' }}>In-Active</option>
                         </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-12">
-                      <!-- text input -->
-                      <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" class="form-control" placeholder="Address" name="address" value="{{ old('address', isset($details->address) && $details->address ? $details->address : '') }}" required="">
                       </div>
                     </div>
                   </div>
@@ -157,10 +157,10 @@ $(document).ready(function() {
 
     $('#dataForm').validate({
       rules: {
-          store_name: {
+          party_name: {
             required: true,
           },
-          mobile: {
+          phone_no: {
             required: true,
             number: true,
           },
@@ -177,23 +177,6 @@ $(document).ready(function() {
           $(element).removeClass('is-invalid');
         }
     });
-
-
-    $("#beat_id").change(function(){
-       var beat_id = $(this).val();
-       var areas = '{{ json_encode($area) }}';
-       areas = JSON.parse(areas.replace(/&quot;/g,'"'));
-       $("#area_id").select2('destroy'); 
-       var html = '<option value="">Select Area</option>';
-       $.each(areas, function (key, val) {
-          if(beat_id == val.beat_id){
-            html = html + '<option value="'+val.id+'">'+val.area+'</option>';
-          }
-       });
-       $("#area_id").html(html);
-       $("#area_id").select2({theme: 'bootstrap4'});
-    });
-
 });
 </script>
 @endsection

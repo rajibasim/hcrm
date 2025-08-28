@@ -28,20 +28,25 @@ class CustomerController extends Controller{
     ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response = Customer::with('area')->with('beat')->where('deleted_at', '=', NULL);
-        if($request->name){
-            $response = $response->where('name', 'like', '%' . $request->name . '%');
-            $serach_data['name'] = $request->name;
+        $response = Customer::where('deleted_at', '=', NULL);
+        if($request->party_name){
+            $response = $response->where('party_name', 'like', '%' . $request->party_name . '%');
+            $serach_data['party_name'] = $request->party_name;
         }
 
-        if($request->unit_id){
-            $response = $response->where('unit_id', '=', $request->unit_id);
-            $serach_data['unit_id'] = $request->unit_id;
+        if($request->party_code){
+            $response = $response->where('party_code', 'like', '%' . $request->party_code . '%');
+            $serach_data['party_code'] = $request->party_code;
         }
 
-        if($request->category_id){
-            $response = $response->where('category_id', '=', $request->category_id);
-            $serach_data['category_id'] = $request->category_id;
+        if($request->beat){
+            $response = $response->where('beat', 'like', '%' . $request->beat . '%');
+            $serach_data['beat'] = $request->beat;
+        }
+
+        if($request->phone_no){
+            $response = $response->where('phone_no', '=', $request->phone_no);
+            $serach_data['phone_no'] = $request->phone_no;
         }
 
         $rows = $response->paginate(20);
@@ -61,9 +66,7 @@ class CustomerController extends Controller{
                 )
             ),
         );
-        $area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('area', 'asc')->get();
-        $beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
-        return view('admin.pages.customer.list', compact('rows', 'metadata', 'area', 'beat'));
+        return view('admin.pages.customer.list', compact('rows', 'metadata'));
     }
 
     ### Create View
@@ -88,15 +91,13 @@ class CustomerController extends Controller{
             ),
         );
 
-        $area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('area', 'asc')->get();
-        $beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
-        return view('admin.pages.customer.form', compact('metadata', 'area', 'beat'));
+        return view('admin.pages.customer.form', compact('metadata'));
     }
 
     ### Store Data
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
-            'store_name' => ['required', 'unique:customers,store_name,NULL,id,mobile,'.$request->input('mobile')]
+            'party_name' => ['required', 'unique:customers,party_name,NULL,id,phone_no,'.$request->input('phone_no')]
         ]); 
 
         if ($validator->fails()) { 
@@ -145,15 +146,13 @@ class CustomerController extends Controller{
         );
         
         $details = Customer::find($id);
-        $area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->where('beat_id', '=', $details->beat_id)->orderBy('area', 'asc')->get();
-        $beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
-        return view('admin.pages.customer.form', compact('details', 'metadata', 'area', 'beat'));
+        return view('admin.pages.customer.form', compact('details', 'metadata'));
     }
 
     ### Update Data
     public function update(Request $request, $id){
         $validator = Validator::make($request->all(), [ 
-            'store_name' => ['required', 'unique:customers,store_name,'.$id.',id,mobile,'.$request->input('mobile')]
+            'party_name' => ['required', 'unique:customers,party_name,'.$id.',id,phone_no,'.$request->input('phone_no')]
         ]); 
 
         if ($validator->fails()) { 
