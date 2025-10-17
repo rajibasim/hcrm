@@ -55,6 +55,13 @@ Route::group(['middleware' => ['auth']], function() {
         // customer
         Route::resource('customer', App\Http\Controllers\Admin\customer\CustomerController::class);
     });
-    ### Customer
+    ### 
+
+    ### Bill Entry
+    Route::group(['prefix' => '/admin/managebill'], function () {
+        // Bill Entry
+        Route::resource('bill', App\Http\Controllers\Admin\bill\BillEntryController::class);
+    });
+    ### Bill Entry
 });
 

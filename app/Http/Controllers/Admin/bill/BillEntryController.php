@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\return_entry;
+namespace App\Http\Controllers\Admin\bill;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,13 +9,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\Area;
-use App\Models\Beat;
+use App\Models\Bill;
 use App\Models\Customer;
-use App\Models\Product;
+use App\Models\DeliveryStatus;
 use App\Models\SalesPerson;
-use App\Models\BillEntry;
-use App\Models\BillEntryProduct;
 use Validator;
 
 class BillEntryController extends Controller{
@@ -26,13 +23,13 @@ class BillEntryController extends Controller{
         $this->middleware('permission:bill_entry_edit', ['only' => ['edit','update']]);
         $this->middleware('permission:bill_entry_delete', ['only' => ['destroy']]);
         $this->title = 'Bill Entry';
-        $this->slug = route('bill-entry.index');
+        $this->slug = route('bill.index');
     }
 
     ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response = BillEntry::with('area')->with('beat')->with('customer')->with('sales_person')->where('deleted_at', '=', NULL);
+        $response = Bill::where('deleted_at', '=', NULL);
         if($request->bill_no){
             $response = $response->where('bill_no', 'like', '%' . $request->bill_no . '%');
             $serach_data['bill_no'] = $request->bill_no;
@@ -85,11 +82,11 @@ class BillEntryController extends Controller{
                 )
             ),
         );
-        $area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('area', 'asc')->get();
-        $beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
+        //$area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('area', 'asc')->get();
+        //$beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
         $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
-        $sales_person = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        return view('admin.pages.bill-entry.list', compact('rows', 'metadata', 'area', 'beat', 'customer', 'sales_person'));
+        //$SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
+        return view('admin.pages.bill.list', compact('rows', 'metadata', 'customer'));
     }
 
     ### Create View
@@ -114,11 +111,10 @@ class BillEntryController extends Controller{
             ),
         );
 
-        $area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('area', 'asc')->get();
-        $beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
+        $DeliveryStatus = DeliveryStatus::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('name', 'asc')->get();
         $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
-        $sales_person = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        return view('admin.pages.bill-entry.form', compact('metadata', 'area', 'beat', 'customer', 'sales_person'));
+        $SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
+        return view('admin.pages.bill.form', compact('metadata', 'customer', 'DeliveryStatus', 'SalesPerson'));
     }
 
     ### Store Data

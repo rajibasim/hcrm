@@ -214,6 +214,27 @@
                                     @endcan
                                 </li>
                             @endcan
+                            @canany(['bill_entry_view'])
+                                <li class="nav-item {{ Request::is("admin/managebill*") ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ Request::is("admin/managebill*") ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-list-ul"></i>
+                                        <p>
+                                            Manage Bill
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    @can('bill_entry_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('bill.index') }}" class="nav-link {{ Request::is("admin/managebill/bill*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Bill</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                </li>
+                            @endcan
                         </ul>
                     </nav>
                     <!-- /.sidebar-menu -->
