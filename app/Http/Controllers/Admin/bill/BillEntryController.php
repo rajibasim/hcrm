@@ -13,6 +13,8 @@ use App\Models\Bill;
 use App\Models\Customer;
 use App\Models\DeliveryStatus;
 use App\Models\SalesPerson;
+use App\Models\PaymentHistory;
+use App\Models\StatusHistory;
 use Validator;
 
 class BillEntryController extends Controller{
@@ -120,34 +122,102 @@ class BillEntryController extends Controller{
     ### Store Data
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
-            'return_date' => ['required']
+            'bill_number' => 'required|string|max:255|unique:bills,bill_number',
+            'invoice_date' => 'required',
+            'delivery_status_update_date' => 'required',
+            'delivery_status_id' => 'required',
+            'sales_person_id' => 'required',
+            'customer_id' => 'required|exists:customers,id',
+            'billed_amount' => 'required|numeric|min:0',
+            'return_amount' => 'required|numeric|min:0',
+            'damage_amount' => 'required|numeric|min:0',
+            'adjusment_percent' => 'required|numeric|min:0|max:100',
+            'adjusment_amount' => 'required|numeric|min:0',
+            'balance_amount' => 'required|numeric|min:0',
+            //'is_active' => 'required|boolean',
+            //'note' => 'required|string|max:500',
         ]); 
 
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
-            $data = $request->all();
-            $return_data = array(
-                'bill_no' => $request->bill_no, 
-                'return_date' => $request->return_date, 
+            $data = array(
+                'bill_number' => $request->bill_number, 
+                'invoice_date' => $request->invoice_date, 
+                'delivery_status_update_date' => $request->delivery_status_update_date, 
+                'delivery_status_id' => $request->delivery_status_id, 
                 'sales_person_id' => $request->sales_person_id, 
-                'beat_id' => $request->beat_id, 
-                'area_id' => $request->area_id, 
                 'customer_id' => $request->customer_id, 
-                'total_amount' => $request->total_amount,
-                'online_amount' => $request->online_amount,
-                'offline_amount' => $request->offline_amount,
+                'billed_amount' => $request->billed_amount ?? 0,
+                'return_amount' => $request->return_amount ?? 0,
+                'damage_amount' => $request->damage_amount ?? 0,
+                'adjusment_percent' => $request->adjusment_percent ?? 0,
+                'adjusment_amount' => $request->adjusment_amount ?? 0,
                 'balance_amount' => $request->balance_amount,
                 'note' => $request->note, 
+                'is_active' => $request->is_active,
                 'created_by' => created_by(),
             );
-            $created = BillEntry::query()->create($return_data);
+            $created = Bill::query()->create($data);
 
             if($created){
-                $flash_data = array(
-                    'status' => 'success',
-                    'message' => $this->title.' successfully created.',
+                $bill_id = $created->id;
+                //$balance_amount = 0;
+                //insert history table
+                if ($request->payment_date && count($request->payment_date) > 0) {
+                    foreach ($request->payment_date as $index => $date) {
+                        if($date){
+                            $payment = new PaymentHistory();
+                            $payment->bill_id = $bill_id; 
+                            $payment->payment_date = $date;
+                            $payment->online_amount = $request->online_amount[$index] ?? 0;
+                            $payment->cash_amount = $request->cash_amount[$index] ?? 0;
+                            $payment->balance_amount = $request->billed_amount - ($request->online_amount[$index] ?? 0 + $request->cash_amount[$index] ?? 0 + $request->damage_amount ?? 0 + $request->adjusment_amount ?? 0 + $request->return_amount ?? 0); 
+                            $payment->created_by = created_by();
+                            $payment->updated_by = updated_by();
+                            //$balance_amount = $balance_amount + $request->online_amount[$index] ?? 0 + $request->cash_amount[$index] ?? 0 + $request->billed_amount ?? 0 + $request->damage_amount ?? 0 + $request->adjusment_amount ?? 0;
+                            // Handle file upload if any
+                            $payment->attachment = '';
+                            if ($request->hasFile('attachment') && isset($request->file('attachment')[$index])) {
+                                $file = $request->file('attachment')[$index];
+                                $filename = time() . '_' . $file->getClientOriginalName();
+                                $path = public_path('uploads/attachment/'.$request->bill_number);
+                                $file->move($path, $filename);
+                                $payment->attachment = $filename;
+                            }
+
+                            $payment->save();
+                        }
+                    }
+                }
+
+                //insert stats table
+                $status_data = array(
+                    'bill_id' => $bill_id,
+                    'delivery_status_id' => $request->delivery_status_id, 
+                    'updated_by' => updated_by(),
+                    'created_by' => created_by(),
                 );
+
+                $created = StatusHistory::query()->create($status_data);
+
+                //update bill table
+                /*$billdata['updated_by'] = updated_by();
+                $billdata['balance_amount'] = $request->billed_amount ?? 0 - $balance_amount;
+                $update = Bill::find($id);
+                $update = $update->update($billdata);*/
+
+                if($created){
+                    $flash_data = array(
+                        'status' => 'success',
+                        'message' => $this->title.' successfully created.',
+                    );
+                }else{
+                    $flash_data = array(
+                        'status' => 'error',
+                        'message' => 'Something went wrong, try again.',
+                    );
+                }
             }else{
                 $flash_data = array(
                     'status' => 'error',

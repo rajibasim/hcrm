@@ -20,6 +20,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property decimal $online_amount
  * @property decimal $cash_amount
  * @property decimal $balance_amount
+ * @property string $attachment
  * @property int $created_by
  * @property int $updated_by
  * @property bool $is_active
@@ -42,6 +43,7 @@ class PaymentHistory extends Model implements Auditable{
         'online_amount',
         'cash_amount',
         'balance_amount',
+        'attachment',
         'created_by',
         'updated_by',
         'is_active',

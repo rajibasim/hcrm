@@ -67,14 +67,14 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Invoice Date </label>
-                        <input type="text" class="form-control datepicker2" placeholder="Invoice Date" name="invoice_date" value="{{ old('invoice_date', isset($details->invoice_date) && $details->invoice_date ? $details->invoice_date : '') }}" required="">
+                        <input type="text" class="form-control datepicker3" placeholder="Invoice Date" name="invoice_date" value="{{ old('invoice_date', isset($details->invoice_date) && $details->invoice_date ? $details->invoice_date : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Delivery Date </label>
-                        <input type="text" class="form-control datepicker2" placeholder="Delivery Date" name="delivery_status_update_date" value="{{ old('delivery_status_update_date', isset($details->delivery_status_update_date) && $details->delivery_status_update_date ? $details->delivery_status_update_date : '') }}" required="">
+                        <input type="text" class="form-control datepicker3" placeholder="Delivery Date" name="delivery_status_update_date" value="{{ old('delivery_status_update_date', isset($details->delivery_status_update_date) && $details->delivery_status_update_date ? $details->delivery_status_update_date : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -123,7 +123,7 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Billed Amount</label>
-                        <input type="number" class="form-control" placeholder="Billed Amount" name="billed_amount" value="{{ old('billed_amount', isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '') }}" required="">
+                        <input type="number" class="form-control billed_amount" placeholder="Billed Amount" name="billed_amount" value="{{ old('billed_amount', isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0') }}" required="">
                         <input type="hidden" class="billed_amount_hidden" name="billed_amount_hidden" value="{{ isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0' }}">
                       </div>
                     </div>
@@ -131,16 +131,16 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Return Amount</label>
-                        <input type="number" class="form-control" placeholder="Return Amount" name="return_amount" value="{{ old('return_amount', isset($details->return_amount) && $details->return_amount ? $details->return_amount : '') }}" required="">
-                        <input type="hidden" id="return_amount_hidden" name="return_amount_hidden" value="{{ isset($details->return_amount) && $details->return_amount ? $details->return_amount : '0' }}">
+                        <input type="number" class="form-control return_amount" placeholder="Return Amount" name="return_amount" value="{{ old('return_amount', isset($details->return_amount) && $details->return_amount ? $details->return_amount : '0') }}" required="">
+                        <input type="hidden" class="return_amount_hidden" name="return_amount_hidden" value="{{ isset($details->return_amount) && $details->return_amount ? $details->return_amount : '0' }}">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Damage Amount</label>
-                        <input type="number" class="form-control" placeholder="Damage Amount" name="damage_amount" value="{{ old('damage_amount', isset($details->damage_amount) && $details->damage_amount ? $details->damage_amount : '') }}" required="">
-                        <input type="hidden" id="damage_amount_hidden" name="damage_amount_hidden" value="{{ isset($details->damage_amount) && $details->damage_amount ? $details->damage_amount : '0' }}">
+                        <input type="number" class="form-control damage_amount" placeholder="Damage Amount" name="damage_amount" value="{{ old('damage_amount', isset($details->damage_amount) && $details->damage_amount ? $details->damage_amount : '0') }}" required="">
+                        <input type="hidden" class="damage_amount_hidden" name="damage_amount_hidden" value="{{ isset($details->damage_amount) && $details->damage_amount ? $details->damage_amount : '0' }}">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -154,8 +154,8 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Adjusment Amount</label>
-                        <input type="number" class="form-control" placeholder="Adjusment Amount" name="adjusment_amount" value="{{ old('adjusment_amount', isset($details->adjusment_amount) && $details->adjusment_amount ? $details->adjusment_amount : '') }}" required="">
-                        <input type="hidden" id="adjusment_amount_hidden" name="adjusment_amount_hidden" value="{{ isset($details->adjusment_amount) && $details->adjusment_amount ? $details->adjusment_amount : '0' }}">
+                        <input type="number" class="form-control adjusment_amount" placeholder="Adjusment Amount" name="adjusment_amount" value="{{ old('adjusment_amount', isset($details->adjusment_amount) && $details->adjusment_amount ? $details->adjusment_amount : '0') }}" required="">
+                        <input type="hidden" class="adjusment_amount_hidden" name="adjusment_amount_hidden" value="{{ isset($details->adjusment_amount) && $details->adjusment_amount ? $details->adjusment_amount : '0' }}">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -172,7 +172,7 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Note</label>
-                        <input type="text" class="form-control" placeholder="Note" name="note" value="{{ old('note', isset($details->note) && $details->note ? $details->note : '') }}" required="">
+                        <input type="text" class="form-control" placeholder="Note" name="note" value="{{ old('note', isset($details->note) && $details->note ? $details->note : '') }}">
                       </div>
                     </div>
                     <div class="col-sm-12">
@@ -185,8 +185,9 @@
                          <tbody>
                             <tr>
                               <td width="30%">Date </td>
-                              <td width="30%">Onile/PhonePe</td>
-                              <td width="30%">Offline/Cash</td>
+                              <td width="20%">Onile/PhonePe</td>
+                              <td width="20%">Offline/Cash</td>
+                              <td width="20%">Attachment</td>
                               <td width="10%">Action</td>
                             </tr>
                             @if(isset($productReturn) && !$productReturn->isEmpty())
@@ -230,15 +231,19 @@
                             @else
                               <tr class="addMore">
                                 <td width="30%" style="width: 10px;">
-                                  <input class="form-control datepicker2" placeholder="Date" type="text" name="payment_date[]" required="">
+                                  <input class="form-control datepicker3" placeholder="Date" type="text" name="payment_date[]">
                                 </td>
-                                <td width="30%">
-                                  <input class="form-control online_amount" placeholder="Onile/PhonePe" type="number" name="online_amount[]" required="">
+                                <td width="20%">
+                                  <input class="form-control online_amount" placeholder="Onlie/PhonePe" type="number" name="online_amount[]" value="0">
                                   <input type="hidden" class="online_amount_hidden" name="online_amount_hidden[]" value="0">
                                 </td>
-                                <td width="30%">
-                                  <input class="form-control cash_amount" placeholder="Offline/Cash" type="number" name="cash_amount[]" required="">
+                                <td width="20%">
+                                  <input class="form-control cash_amount" placeholder="Offline/Cash" type="number" name="cash_amount[]" value="0">
                                   <input type="hidden" class="cash_amount_hidden" name="cash_amount_hidden[]" value="0">
+                                </td>
+                                <td width="20%">
+                                  <input class="form-control attachment" type="file" name="attachment[]">
+                                  <input type="hidden" class="attachment_hidden" name="attachment_hidden[]" value="0">
                                 </td>
                                 <td width="10%">
                                   <a href="javascript:void(0);" class="btn btn-primary btn-sm addMoreBtn" data-toggle="tooltip" data-placement="top" title="Add New">
@@ -248,9 +253,9 @@
                               </tr>
                             @endif
                             <tr>
-                               <td colspan="3">Balance Amount</td>
-                               <td colspan="2" id="balance_amount">{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '0.00' }}</td>
-                               <input type="hidden" class="balance_amount" name="balance_amount" value="{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '' }}">
+                               <td colspan="4">Balance Amount</td>
+                               <td colspan="1" id="balance_amount">{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '0.00' }}</td>
+                               <input type="hidden" class="balance_amount" name="balance_amount" value="{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '0' }}">
                             </tr>
                          </tbody>
                       </table>
@@ -289,45 +294,152 @@ $(document).ready(function() {
     @endif
 
     $('#dataForm').validate({
-      rules: {
-          bill_number: {
-            required: true,
-          },
-          invoice_date: {
-            required: true,
-            number: true,
-          },
+        rules: {
+            bill_number: { required: true },
+            invoice_date: { required: true},
+            delivery_status_update_date: { required: true},
+            delivery_status_id: { required: true },
+            sales_person_id: { required: true },
+            customer_id: { required: true },
+            billed_amount: { required: true, number: true, min: 0 },
+            return_amount: { required: true, number: true, min: 0 },
+            damage_amount: { required: true, number: true, min: 0 },
+            adjusment_percent: { required: true, number: true, min: 0 },
+            adjusment_amount: { required: true, number: true, min: 0 },
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
-          error.addClass('invalid-feedback');
-          element.closest('.form-group').append(error);
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
         },
-        highlight: function (element, errorClass, validClass) {
-          $(element).addClass('is-invalid');
+        highlight: function (element) {
+            $(element).addClass('is-invalid');
         },
-        unhighlight: function (element, errorClass, validClass) {
-          $(element).removeClass('is-invalid');
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid');
         }
     });
 
-
     $(".addMoreBtn").click(function () {
-      var html = '<tr class="addMore"><td width="30%"><input class="form-control datepicker2" placeholder="Date" type="text" name="payment_date[]" required=""></td><td width="30%"><input class="form-control online_amount" placeholder="Onile/PhonePe" type="number" name="online_amount[]" required=""><input type="hidden" class="online_amount_hidden" name="online_amount_hidden[]" value="0"></td><td width="30%"><input class="form-control cash_amount" placeholder="Offline/Cash" type="number" name="cash_amount[]" required=""><input type="hidden" class="cash_amount_hidden" name="cash_amount_hidden[]" value="0"></td><td width="10%"><a href="javascript:void(0);" class="btn btn-danger btn-sm remove" data-toggle="tooltip" data-placement="top" title="Remove"><i class="fa fa-minus" aria-hidden="true"></i></a></td></tr>';
-        //$('input').rules('add', 'required');
+        var html = `
+        <tr class="addMore">
+            <td width="30%"><input class="form-control datepicker3" placeholder="Date" type="text" name="payment_date[]"></td>
+            <td width="20%"><input class="form-control online_amount" placeholder="Online/PhonePe" type="number" name="online_amount[]" value="0"><input type="hidden" class="online_amount_hidden" name="online_amount_hidden[]" value="0"></td>
+            <td width="20%"><input class="form-control cash_amount" placeholder="Offline/Cash" type="number" name="cash_amount[]" value="0"><input type="hidden" class="cash_amount_hidden" name="cash_amount_hidden[]" value="0"></td>
+            <td width="20%"><input class="form-control attachment" type="file" name="attachment[]"><input type="hidden" class="attachment_hidden" name="attachment_hidden[]" value="0"></td>
+            <td width="10%"><a href="javascript:void(0);" class="btn btn-danger btn-sm remove"><i class="fa fa-minus"></i></a></td>
+        </tr>`;
+
         $(".addMore").last().after(html);
 
-        $('.datepicker2').datepicker({
+        $('.datepicker3').datepicker({
             inline: true,
-            dateFormat: "dd/mm/yy",
+            dateFormat: "yy-mm-dd",
         });
+        balance_amount();
     });
 
-    $(document).on('click', '.remove', function(e){
-      e.preventDefault();
-      $(this).parent().parent().remove();
-      //total();
+    $(document).on("click", ".remove", function () {
+        $(this).closest("tr").remove();
+        balance_amount();
     });
+
+    $(document).on('change', 'input.attachment', function() {
+        var $row = $(this).closest('tr'); // get the row
+        var $hiddenInput = $row.find('.attachment_hidden'); // find hidden input in the same row
+        $hiddenInput.val('1'); // set value
+    });
+
+    $(document).on('keyup', '.billed_amount', function(e){
+        var billed_amount = $(this).val();
+        if(billed_amount.length > 0 && billed_amount > 0){
+          $('.billed_amount_hidden').val(billed_amount);
+        }else{
+          $('.billed_amount_hidden').val(0);
+        }
+
+        balance_amount();
+    });
+
+    $(document).on('keyup', '.return_amount', function(e){
+        var return_amount = $(this).val();
+        if(return_amount.length > 0 && return_amount > 0){
+          $('.return_amount_hidden').val(return_amount);
+        }else{
+          $('.return_amount_hidden').val(0);
+        }
+
+        balance_amount();
+    });
+
+    $(document).on('keyup', '.damage_amount', function(e){
+        var damage_amount = $(this).val();
+        if(damage_amount.length > 0 && damage_amount > 0){
+          $('.damage_amount_hidden').val(damage_amount);
+        }else{
+          $('.damage_amount_hidden').val(0);
+        }
+
+        balance_amount();
+    });
+
+    $(document).on('keyup', '.adjusment_amount', function(e){
+        var adjusment_amount = $(this).val();
+        if(adjusment_amount.length > 0 && adjusment_amount > 0){
+          $('.adjusment_amount_hidden').val(adjusment_amount);
+        }else{
+          $('.adjusment_amount_hidden').val(0);
+        }
+
+        balance_amount();
+    });
+
+    $(document).on('keyup', '.online_amount', function(){
+        var online_amount = $(this).val();
+        if(online_amount.length > 0 && online_amount > 0){
+          $(this).next('input').val(online_amount);
+        }else{
+          $(this).next('input').val(0);
+        }
+
+        balance_amount();
+    });
+
+    $(document).on('keyup', '.cash_amount', function(){
+        var cash_amount = $(this).val();
+        if(cash_amount.length > 0 && cash_amount > 0){
+          $(this).next('input').val(cash_amount);
+        }else{
+          $(this).next('input').val(0);
+        }
+        balance_amount();
+    });
+
+    function balance_amount(){
+        var online_total = 0;
+        var online = $(".online_amount_hidden");
+        for(var i = 0; i < online.length; i++){
+            online_total = online_total + parseFloat($(online[i]).val());
+        }
+
+        var offline_total = 0;
+        var offline = $(".cash_amount_hidden");
+        for(var i = 0; i < offline.length; i++){
+            offline_total = offline_total + parseFloat($(offline[i]).val());
+        }
+
+        var billed_amount_hidden = parseFloat($('.billed_amount_hidden').val());
+        var return_amount_hidden = parseFloat($('.return_amount_hidden').val());
+        var damage_amount_hidden = parseFloat($('.damage_amount_hidden').val());
+        var adjusment_amount_hidden = parseFloat($('.adjusment_amount_hidden').val());
+
+        //console.log(billed_amount_hidden);
+
+        var total = billed_amount_hidden - (online_total + offline_total + return_amount_hidden + damage_amount_hidden + adjusment_amount_hidden);
+
+        $("#balance_amount").html(total.toFixed(2));
+        $(".balance_amount").val(total);
+    }
 });
 </script>
 @endsection

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('online_amount', 10, 2)->default(0)->nullable();
             $table->decimal('cash_amount', 10, 2)->default(0)->nullable();
             $table->decimal('balance_amount', 10, 2)->default(0)->nullable();
+            $table->string('bill_number')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->tinyInteger('is_active')->default('1')->comment('1 => Active , 0 => In-Active');
