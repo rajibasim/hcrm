@@ -153,29 +153,42 @@ class BillEntryController extends Controller{
                 'damage_amount' => $request->damage_amount ?? 0,
                 'adjusment_percent' => $request->adjusment_percent ?? 0,
                 'adjusment_amount' => $request->adjusment_amount ?? 0,
-                'balance_amount' => $request->balance_amount,
+                'balance_amount' => $request->balance_amount ?? 0,
                 'note' => $request->note, 
                 'is_active' => $request->is_active,
                 'created_by' => created_by(),
             );
             $created = Bill::query()->create($data);
 
+            $online_amount = 0;
+            $cash_amount = 0;
             if($created){
                 $bill_id = $created->id;
-                //$balance_amount = 0;
                 //insert history table
                 if ($request->payment_date && count($request->payment_date) > 0) {
                     foreach ($request->payment_date as $index => $date) {
                         if($date){
+                            
+                            $total = array_sum([
+                                $request->online_amount[$index] ?? 0,
+                                $request->cash_amount[$index] ?? 0,
+                                //$request->damage_amount ?? 0,
+                                //$request->adjusment_amount ?? 0,
+                                //$request->return_amount ?? 0,
+                            ]);
+
                             $payment = new PaymentHistory();
                             $payment->bill_id = $bill_id; 
                             $payment->payment_date = $date;
                             $payment->online_amount = $request->online_amount[$index] ?? 0;
                             $payment->cash_amount = $request->cash_amount[$index] ?? 0;
-                            $payment->balance_amount = $request->billed_amount - ($request->online_amount[$index] ?? 0 + $request->cash_amount[$index] ?? 0 + $request->damage_amount ?? 0 + $request->adjusment_amount ?? 0 + $request->return_amount ?? 0); 
+                            $payment->balance_amount = $total; // Total payment receved on this day
                             $payment->created_by = created_by();
                             $payment->updated_by = updated_by();
-                            //$balance_amount = $balance_amount + $request->online_amount[$index] ?? 0 + $request->cash_amount[$index] ?? 0 + $request->billed_amount ?? 0 + $request->damage_amount ?? 0 + $request->adjusment_amount ?? 0;
+                            
+                            $online_amount = $online_amount + $request->online_amount[$index] ?? 0;
+                            $cash_amount = $cash_amount + $request->cash_amount[$index] ?? 0;
+
                             // Handle file upload if any
                             $payment->attachment = '';
                             if ($request->hasFile('attachment') && isset($request->file('attachment')[$index])) {
@@ -202,12 +215,13 @@ class BillEntryController extends Controller{
                 $created = StatusHistory::query()->create($status_data);
 
                 //update bill table
-                /*$billdata['updated_by'] = updated_by();
-                $billdata['balance_amount'] = $request->billed_amount ?? 0 - $balance_amount;
-                $update = Bill::find($id);
-                $update = $update->update($billdata);*/
+                $billdata['updated_by'] = updated_by();
+                $billdata['online_amount'] = $online_amount;
+                $billdata['cash_amount'] = $cash_amount;
+                $update = Bill::find($bill_id);
+                $update = $update->update($billdata);
 
-                if($created){
+                if($update){
                     $flash_data = array(
                         'status' => 'success',
                         'message' => $this->title.' successfully created.',
@@ -252,44 +266,136 @@ class BillEntryController extends Controller{
             ),
         );
         
-        $details = BillEntry::find($id);
-        $beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
-        $area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->where('beat_id', '=', $details->beat_id)->orderBy('area', 'asc')->get();
-        $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->where('beat_id', '=', $details->beat_id)->where('area_id', '=', $details->area_id)->orderBy('id', 'asc')->get();
-        $sales_person = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        return view('admin.pages.bill-entry.form', compact('details', 'metadata', 'area', 'beat', 'customer', 'sales_person'));
+        $details = Bill::find($id);
+        $DeliveryStatus = DeliveryStatus::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('name', 'asc')->get();
+        $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
+        $SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
+        $paymentHistory = PaymentHistory::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->where('bill_id', '=', $id)->get();
+        return view('admin.pages.bill.form', compact('details', 'metadata', 'customer', 'DeliveryStatus', 'SalesPerson', 'paymentHistory'));
     }
 
     ### Update Data
     public function update(Request $request, $id){
         $validator = Validator::make($request->all(), [ 
-            'return_date' => ['required']
+            'bill_number' => 'required|string|max:50|unique:bills,bill_number,' . $id,
+            'invoice_date' => 'required',
+            'delivery_status_update_date' => 'required',
+            'delivery_status_id' => 'required',
+            'sales_person_id' => 'required',
+            'customer_id' => 'required|exists:customers,id',
+            'billed_amount' => 'required|numeric|min:0',
+            'return_amount' => 'required|numeric|min:0',
+            'damage_amount' => 'required|numeric|min:0',
+            'adjusment_percent' => 'required|numeric|min:0|max:100',
+            'adjusment_amount' => 'required|numeric|min:0',
+            'balance_amount' => 'required|numeric|min:0',
         ]); 
 
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
-            $return_data = array(
-                'bill_no' => $request->bill_no, 
-                'return_date' => $request->return_date, 
+            $data = array(
+                'bill_number' => $request->bill_number, 
+                'invoice_date' => $request->invoice_date, 
+                'delivery_status_update_date' => $request->delivery_status_update_date, 
+                'delivery_status_id' => $request->delivery_status_id, 
                 'sales_person_id' => $request->sales_person_id, 
-                'beat_id' => $request->beat_id, 
-                'area_id' => $request->area_id, 
                 'customer_id' => $request->customer_id, 
+                'billed_amount' => $request->billed_amount ?? 0,
+                'return_amount' => $request->return_amount ?? 0,
+                'damage_amount' => $request->damage_amount ?? 0,
+                'adjusment_percent' => $request->adjusment_percent ?? 0,
+                'adjusment_amount' => $request->adjusment_amount ?? 0,
+                'balance_amount' => $request->balance_amount ?? 0,
                 'note' => $request->note, 
-                'total_amount' => $request->total_amount,
-                'online_amount' => $request->online_amount,
-                'offline_amount' => $request->offline_amount,
-                'balance_amount' => $request->balance_amount,
+                'is_active' => $request->is_active,
                 'updated_by' => updated_by(),
             );
-            $update = BillEntry::find($id);
-            $update = $update->update($return_data);
+            $update = Bill::find($id);
+            $updated = $update->update($data);
+            $online_amount = 0;
+            $cash_amount = 0;
             if($update){
-                $flash_data = array(
-                    'status' => 'success',
-                    'message' => $this->title.' successfully updated.',
+                $bill_id = $id;
+
+                //remove from payment history
+                $old_ids = $request->old_ids;
+                if($old_ids){
+                    $old_ids_arr = explode(',', $old_ids);
+                    foreach ($old_ids_arr as $olkey => $orvalue) {
+                        //delete old data
+                        $delete = PaymentHistory::withTrashed()->find($orvalue);
+                        $delete = $delete->forceDelete();
+                    }
+                }
+
+
+                //insert history table
+                if ($request->payment_date && count($request->payment_date) > 0) {
+                    foreach ($request->payment_date as $index => $date) {
+                        if($date){
+                            $total = array_sum([
+                                $request->online_amount[$index] ?? 0,
+                                $request->cash_amount[$index] ?? 0,
+                                //$request->damage_amount ?? 0,
+                                //$request->adjusment_amount ?? 0,
+                                //$request->return_amount ?? 0,
+                            ]);
+
+                            $payment = new PaymentHistory();
+                            $payment->bill_id = $bill_id; 
+                            $payment->payment_date = $date;
+                            $payment->online_amount = $request->online_amount[$index] ?? 0;
+                            $payment->cash_amount = $request->cash_amount[$index] ?? 0;
+                            $payment->balance_amount = $total; // Total payment receved on this day
+                            $payment->created_by = created_by();
+                            $payment->updated_by = updated_by();
+                            
+                            $online_amount = $online_amount + $request->online_amount[$index] ?? 0;
+                            $cash_amount = $cash_amount + $request->cash_amount[$index] ?? 0;
+
+                            // Handle file upload if any
+                            $payment->attachment = '';
+                            if ($request->hasFile('attachment') && isset($request->file('attachment')[$index])) {
+                                $file = $request->file('attachment')[$index];
+                                $filename = time() . '_' . $file->getClientOriginalName();
+                                $path = public_path('uploads/attachment/'.$request->bill_number);
+                                $file->move($path, $filename);
+                                $payment->attachment = $filename;
+                            }
+
+                            $payment->save();
+                        }
+                    }
+                }
+
+                //insert stats table
+                $status_data = array(
+                    'bill_id' => $bill_id,
+                    'delivery_status_id' => $request->delivery_status_id, 
+                    'updated_by' => updated_by(),
+                    'created_by' => created_by(),
                 );
+
+                $created = StatusHistory::query()->create($status_data);
+
+                //update bill table
+                $billdata['updated_by'] = updated_by();
+                $billdata['online_amount'] = $online_amount;
+                $billdata['cash_amount'] = $cash_amount;
+                $updated = $update->update($billdata);
+
+                if($updated){
+                    $flash_data = array(
+                        'status' => 'success',
+                        'message' => $this->title.' successfully updated.',
+                    );
+                }else{
+                    $flash_data = array(
+                        'status' => 'error',
+                        'message' => 'Something went wrong, try again.',
+                    );
+                }
             }else{
                 $flash_data = array(
                     'status' => 'error',
@@ -304,9 +410,8 @@ class BillEntryController extends Controller{
 
     ### Delete Data
     public function destroy($id){
-        $delete = BillEntry::find($id);
-        $delete = $delete->delete();
-
+        $delete = Bill::withTrashed()->find($id);
+        $delete = $delete->forceDelete();
         if($delete){
             $flash_data = array(
                 'status' => 'success',

@@ -337,7 +337,14 @@
             //$( ".datepicker" ).datepicker();
 
             // Summernote
-            $('#summernote').summernote();          
+            $('#summernote').summernote();   
+
+            $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+              event.preventDefault();
+              $(this).ekkoLightbox({
+                alwaysShowClose: true
+              });
+            });       
         })
         </script>
         @yield('javascripts')

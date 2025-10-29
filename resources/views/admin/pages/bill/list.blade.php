@@ -113,10 +113,9 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th>Party Name</th>
-                      <th>Party Code</th>
-                      <th>Phone No</th>
-                      <th>Beat</th>
+                      <th>Bill No</th>
+                      <th>Bill Date</th>
+                      <th>Billed Amount</th>
                       <th>Channel</th>
                       <th>Status</th>
                       <th>Action</th>
@@ -126,9 +125,9 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                     <tr> 
-                      <td>{{ $res->party_name }}</td>
-                      <td>{{ $res->party_code }}</td>
-                      <td>{{ $res->phone_no }}</td>
+                      <td>{{ $res->bill_number }}</td>
+                      <td>{{ $res->invoice_date }}</td>
+                      <td>{{ $res->billed_amount }}</td>
                       <td>{{ $res->beat }}</td>
                       <td>{{ $res->channel }}</td>
                       <td>{{ $res->is_active == 1 ? 'Active' : 'In-Active' }}</td>

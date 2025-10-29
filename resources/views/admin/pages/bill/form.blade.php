@@ -60,21 +60,21 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Bill Number</label>
-                        <input type="text" class="form-control" placeholder="Bill Number" name="bill_number" value="{{ old('bill_number', isset($details->bill_number) && $details->bill_number ? $details->bill_number : '') }}" required="">
+                        <input type="text" class="form-control" placeholder="Bill Number" name="bill_number" value="{{ isset($details->bill_number) && $details->bill_number ? $details->bill_number : '' }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Invoice Date </label>
-                        <input type="text" class="form-control datepicker3" placeholder="Invoice Date" name="invoice_date" value="{{ old('invoice_date', isset($details->invoice_date) && $details->invoice_date ? $details->invoice_date : '') }}" required="">
+                        <input type="text" class="form-control datepicker3" placeholder="Invoice Date" name="invoice_date" value="{{ isset($details->invoice_date) && $details->invoice_date ? $details->invoice_date : '' }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Delivery Date </label>
-                        <input type="text" class="form-control datepicker3" placeholder="Delivery Date" name="delivery_status_update_date" value="{{ old('delivery_status_update_date', isset($details->delivery_status_update_date) && $details->delivery_status_update_date ? $details->delivery_status_update_date : '') }}" required="">
+                        <input type="text" class="form-control datepicker3" placeholder="Delivery Date" name="delivery_status_update_date" value="{{ isset($details->delivery_status_update_date) && $details->delivery_status_update_date ? $details->delivery_status_update_date : '' }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -123,7 +123,7 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Billed Amount</label>
-                        <input type="number" class="form-control billed_amount" placeholder="Billed Amount" name="billed_amount" value="{{ old('billed_amount', isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0') }}" required="">
+                        <input type="number" class="form-control billed_amount" placeholder="Billed Amount" name="billed_amount" value="{{ isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0' }}" required="">
                         <input type="hidden" class="billed_amount_hidden" name="billed_amount_hidden" value="{{ isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0' }}">
                       </div>
                     </div>
@@ -131,7 +131,7 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Return Amount</label>
-                        <input type="number" class="form-control return_amount" placeholder="Return Amount" name="return_amount" value="{{ old('return_amount', isset($details->return_amount) && $details->return_amount ? $details->return_amount : '0') }}" required="">
+                        <input type="number" class="form-control return_amount" placeholder="Return Amount" name="return_amount" value="{{ isset($details->return_amount) && $details->return_amount ? $details->return_amount : '0' }}" required="">
                         <input type="hidden" class="return_amount_hidden" name="return_amount_hidden" value="{{ isset($details->return_amount) && $details->return_amount ? $details->return_amount : '0' }}">
                       </div>
                     </div>
@@ -139,7 +139,7 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Damage Amount</label>
-                        <input type="number" class="form-control damage_amount" placeholder="Damage Amount" name="damage_amount" value="{{ old('damage_amount', isset($details->damage_amount) && $details->damage_amount ? $details->damage_amount : '0') }}" required="">
+                        <input type="number" class="form-control damage_amount" placeholder="Damage Amount" name="damage_amount" value="{{ isset($details->damage_amount) && $details->damage_amount ? $details->damage_amount : '0' }}" required="">
                         <input type="hidden" class="damage_amount_hidden" name="damage_amount_hidden" value="{{ isset($details->damage_amount) && $details->damage_amount ? $details->damage_amount : '0' }}">
                       </div>
                     </div>
@@ -147,14 +147,14 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Adjusment Percent</label>
-                        <input type="number" class="form-control" placeholder="Adjusment Percent" name="adjusment_percent" value="{{ old('adjusment_percent', isset($details->adjusment_percent) && $details->adjusment_percent ? $details->adjusment_percent : '1.75') }}" required="">
+                        <input type="number" class="form-control" placeholder="Adjusment Percent" name="adjusment_percent" value="{{ isset($details->adjusment_percent) && $details->adjusment_percent ? $details->adjusment_percent : '1.75' }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Adjusment Amount</label>
-                        <input type="number" class="form-control adjusment_amount" placeholder="Adjusment Amount" name="adjusment_amount" value="{{ old('adjusment_amount', isset($details->adjusment_amount) && $details->adjusment_amount ? $details->adjusment_amount : '0') }}" required="">
+                        <input type="number" class="form-control adjusment_amount" placeholder="Adjusment Amount" name="adjusment_amount" value="{{ isset($details->adjusment_amount) && $details->adjusment_amount ? $details->adjusment_amount : '0' }}" required="">
                         <input type="hidden" class="adjusment_amount_hidden" name="adjusment_amount_hidden" value="{{ isset($details->adjusment_amount) && $details->adjusment_amount ? $details->adjusment_amount : '0' }}">
                       </div>
                     </div>
@@ -190,68 +190,60 @@
                               <td width="20%">Attachment</td>
                               <td width="10%">Action</td>
                             </tr>
-                            @if(isset($productReturn) && !$productReturn->isEmpty())
-                              @foreach ( $productReturn as $rkey => $rres )
+                            @if(isset($paymentHistory) && !$paymentHistory->isEmpty())
+                              @foreach ( $paymentHistory as $rkey => $rres )
                                 <tr class="addMore">
-                                  <td width="55%">
-                                    <select class="form-control select2" name="product_id[]" required="">
-                                      <option value="">Select Product</option>
-                                      @if(isset($product)) && !$product->isEmpty())
-                                        @foreach ( $product as $key => $res )
-                                          <option value="{{ $res->id }}" {{ isset($rres->product_id) && $rres->product_id == $res->id ? 'selected' : '' }}>{{ $res->name }}-{{ $res->unit->unit }}-{{ $res->category->category }}</option>
-                                        @endforeach
-                                      @endif
-                                    </select>
+                                  <td width="30%" style="width: 10px;">
+                                    <input class="form-control datepicker3" placeholder="Date" type="text" disabled="" value="{{ isset($rres->payment_date) ? $rres->payment_date : 0 }}">
                                   </td>
-                                  <td width="15%">
-                                    <input class="form-control product_qty" placeholder="QTY" type="number" name="product_qty[]" required="" value="{{ isset($rres->product_qty) && $rres->product_qty ? $rres->product_qty : '0' }}">
-                                    <input type="hidden" class="product_qty_hidden" name="product_qty_hidden[]" value="{{ isset($rres->product_qty) && $rres->product_qty ? $rres->product_qty : '0' }}">
+                                  <td width="20%">
+                                    <input class="form-control online_amount" placeholder="Onlie/PhonePe" type="number" disabled="" value="{{ isset($rres->online_amount) ? $rres->online_amount : 0 }}">
+                                    <input type="hidden" class="online_amount_hidden" name="online_amount_hidden[]" value="{{ isset($rres->online_amount) ? $rres->online_amount : 0 }}">
                                   </td>
-                                  <td width="15%">
-                                    <input class="form-control product_unit_price" placeholder="Unit Price" type="number" name="product_unit_price[]" required="" value="{{ isset($rres->product_unit_price) && $rres->product_unit_price ? $rres->product_unit_price : '0' }}">
-                                    <input type="hidden" class="product_unit_price_hidden" name="product_unit_price_hidden[]" value="{{ isset($rres->product_unit_price) && $rres->product_unit_price ? $rres->product_unit_price : '0' }}">
+                                  <td width="20%">
+                                    <input class="form-control cash_amount" placeholder="Offline/Cash" type="number" disabled="" value="{{ isset($rres->cash_amount) ? $rres->cash_amount : 0 }}">
+                                    <input type="hidden" class="cash_amount_hidden" name="cash_amount_hidden[]" value="{{ isset($rres->cash_amount) ? $rres->cash_amount : 0 }}">
                                   </td>
-                                  <td width="15%">
-                                    <input class="form-control cash_amount" placeholder="Sub Total" type="text" name="cash_amount[]" readonly="" value="{{ isset($rres->cash_amount) && $rres->cash_amount ? $rres->cash_amount : '0.00' }}">
-                                    <input type="hidden" class="cash_amount_hidden" name="cash_amount_hidden[]" value="{{ isset($rres->cash_amount) && $rres->cash_amount ? $rres->cash_amount : '0' }}">
-                                  </td>
-                                  @if($rkey > 0)
-                                    <td width="10%">
-                                      <a href="javascript:void(0);" class="btn btn-danger btn-sm remove"><i class="fa fa-minus" aria-hidden="true"></i></a>
-                                    </td>
-                                  @else
-                                    <td width="10%">
-                                      <a href="javascript:void(0);" class="btn btn-primary btn-sm addMoreBtn" data-toggle="tooltip" data-placement="top" title="Add New">
-                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                  <td width="20%">
+                                    @if($rres->attachment)
+                                      <a href="{{ asset('uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}" data-toggle="lightbox" data-gallery="gallery">
+                                        <img style="width: 40px; height: 40px" src="{{ asset('uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}">
                                       </a>
-                                    </td>
-                                  @endif
+                                    @else
+                                      <img style="width: 40px; height: 40px" src="{{ asset('admin-assets/img/no-image.jpg') }}">
+                                    @endif
+                                  </td>
+                                  <td width="10%">
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm removeOld" id="{{ isset($rres->id) ? $rres->id : 0 }}">
+                                      <i class="fa fa-minus"></i>
+                                    </a>
+                                  </td>
                                 </tr>
                               @endforeach
-                            @else
-                              <tr class="addMore">
-                                <td width="30%" style="width: 10px;">
-                                  <input class="form-control datepicker3" placeholder="Date" type="text" name="payment_date[]">
-                                </td>
-                                <td width="20%">
-                                  <input class="form-control online_amount" placeholder="Onlie/PhonePe" type="number" name="online_amount[]" value="0">
-                                  <input type="hidden" class="online_amount_hidden" name="online_amount_hidden[]" value="0">
-                                </td>
-                                <td width="20%">
-                                  <input class="form-control cash_amount" placeholder="Offline/Cash" type="number" name="cash_amount[]" value="0">
-                                  <input type="hidden" class="cash_amount_hidden" name="cash_amount_hidden[]" value="0">
-                                </td>
-                                <td width="20%">
-                                  <input class="form-control attachment" type="file" name="attachment[]">
-                                  <input type="hidden" class="attachment_hidden" name="attachment_hidden[]" value="0">
-                                </td>
-                                <td width="10%">
-                                  <a href="javascript:void(0);" class="btn btn-primary btn-sm addMoreBtn" data-toggle="tooltip" data-placement="top" title="Add New">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                                  </a>
-                                </td>
-                              </tr>
                             @endif
+                            <input class="form-control" type="hidden" value="" name="old_ids" id="old_ids">
+                            <tr class="addMore">
+                              <td width="30%" style="width: 10px;">
+                                <input class="form-control datepicker3" placeholder="Date" type="text" name="payment_date[]">
+                              </td>
+                              <td width="20%">
+                                <input class="form-control online_amount" placeholder="Onlie/PhonePe" type="number" name="online_amount[]" value="0">
+                                <input type="hidden" class="online_amount_hidden" name="online_amount_hidden[]" value="0">
+                              </td>
+                              <td width="20%">
+                                <input class="form-control cash_amount" placeholder="Offline/Cash" type="number" name="cash_amount[]" value="0">
+                                <input type="hidden" class="cash_amount_hidden" name="cash_amount_hidden[]" value="0">
+                              </td>
+                              <td width="20%">
+                                <input class="form-control attachment" type="file" name="attachment[]">
+                                <input type="hidden" class="attachment_hidden" name="attachment_hidden[]" value="0">
+                              </td>
+                              <td width="10%">
+                                <a href="javascript:void(0);" class="btn btn-primary btn-sm addMoreBtn" data-toggle="tooltip" data-placement="top" title="Add New">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                </a>
+                              </td>
+                            </tr>
                             <tr>
                                <td colspan="4">Balance Amount</td>
                                <td colspan="1" id="balance_amount">{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '0.00' }}</td>
@@ -343,6 +335,26 @@ $(document).ready(function() {
         $(this).closest("tr").remove();
         balance_amount();
     });
+
+    $(document).on("click", ".removeOld", function () {
+        // Get existing IDs from hidden input and convert to array
+        var existingIds = $('#old_ids').val() ? $('#old_ids').val().split(',') : [];
+        var id = $(this).attr('id'); 
+        
+        // Only push if not already in array
+        if (!existingIds.includes(id)) {
+            existingIds.push(id);
+        }
+
+        // Update hidden field with updated array
+        $('#old_ids').val(existingIds.join(','));
+        // Remove table row
+        $(this).closest("tr").remove();
+        // Recalculate Balance
+        balance_amount();
+    });
+
+    
 
     $(document).on('change', 'input.attachment', function() {
         var $row = $(this).closest('tr'); // get the row

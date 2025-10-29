@@ -87,14 +87,6 @@ class UserController extends Controller{
         );
 
         $roles = Role::pluck('name','name')->all();
-        if(Auth::user()->park_id){
-            foreach ($roles as $key => $value) {
-               if($value === 'Park Admin' || $value === 'Park Employee'){
-                    $rolesNew[$value] = $value;
-               }
-            }
-            $roles = $rolesNew;
-        }
         $userRole = [];
         return view('admin.pages.user.form', compact('metadata', 'roles', 'userRole'));
     }
@@ -157,14 +149,6 @@ class UserController extends Controller{
         );
 
         $roles = Role::pluck('name','name')->all();
-        if(Auth::user()->park_id){
-            foreach ($roles as $key => $value) {
-               if($value === 'Park Admin' || $value === 'Park Employee'){
-                    $rolesNew[$value] = $value;
-               }
-            }
-            $roles = $rolesNew;
-        }
         $details = User::find($id);
         $userRole = $details->roles->pluck('name','name')->all();
         return view('admin.pages.user.form', compact('details', 'metadata', 'roles', 'userRole'));
