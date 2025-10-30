@@ -97,9 +97,13 @@
                         <label>Sales Person</label>
                         <select class="form-control select2" name="sales_person_id" id="sales_person_id" required="">
                           <option value="">Select Sales Person</option>
-                          @if($SalesPerson) && !$SalesPerson->isEmpty())
+                          @if($SalesPerson && !$SalesPerson->isEmpty())
                             @foreach ( $SalesPerson as $key => $res )
-                              <option value="{{ $res->id }}" {{ isset($details->sales_person_id) && $details->sales_person_id == $res->id ? 'selected' : '' }}>{{ $res->name }}</option>
+                              @if(Auth::user()->sales_person_id > 0 && Auth::user()->sales_person_id == $res->id)
+                                <option value="{{ $res->id }}" {{ isset($details->sales_person_id) && $details->sales_person_id == $res->id ? 'selected' : '' }}>{{ $res->name }}</option>
+                              @elseif(Auth::user()->sales_person_id == 0)
+                                <option value="{{ $res->id }}" {{ isset($details->sales_person_id) && $details->sales_person_id == $res->id ? 'selected' : '' }}>{{ $res->name }}</option>
+                              @endif
                             @endforeach
                           @endif
                         </select>

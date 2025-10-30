@@ -103,6 +103,16 @@
                     <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
+                        <label>Add as Sales Person</label>
+                        <select class="form-control select2" name="is_sales_person" id="is_sales_person" {{ isset($details->id) && $details->id > 0 ? 'disabled' : '' }}>
+                          <option value="1" {{ isset($details->sales_person_id) && $details->sales_person_id > 0 ? 'selected' : '' }}>Yes</option>
+                          <option value="0" {{ isset($details->sales_person_id) && $details->sales_person_id == 0 ? 'selected' : '' }}>No</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- select -->
+                      <div class="form-group">
                         <label>Status</label>
                         <select class="form-control select2" name="is_active" id="is_active">
                           <option value="1" {{ isset($details->is_active) && $details->is_active == 1 ? 'selected' : '' }}>Active</option>

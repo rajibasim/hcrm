@@ -140,20 +140,10 @@
                                             <i class="fas fa-angle-left right"></i>
                                         </p>
                                     </a>
-                                    @can('status_view')
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{ route('status.index') }}" class="nav-link {{ Request::is("admin/masterdata/status*") ? 'active' : '' }}">
-                                                    <i class="far fa-circle nav-icon"></i>
-                                                    <p>Status</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endcan    
                                     @can('sales_person_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
-                                                <a href="{{ route('sales-person.index') }}" class="nav-link {{ Request::is("admin/usersrole/sales-person*") ? 'active' : '' }}">
+                                                <a href="{{ route('sales-person.index') }}" class="nav-link {{ Request::is("admin/masterdata/sales-person*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
                                                     <p>Sales Person</p>
                                                 </a>

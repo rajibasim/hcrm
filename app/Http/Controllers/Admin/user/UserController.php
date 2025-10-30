@@ -13,6 +13,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\SalesPerson;
 use Validator;
 
 class UserController extends Controller{
@@ -105,6 +106,20 @@ class UserController extends Controller{
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
+            if($request->is_sales_person){
+                $SalesPerson = array(
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'mobile' => $request->phone,
+                    'created_by' => created_by(),
+                );
+
+                $salesPerson = SalesPerson::query()->create($SalesPerson);
+                $sales_person_id = $salesPerson->id;
+                $data['sales_person_id'] = $sales_person_id;
+            }
+
+            
             if($request->hasFile('profile_image')){
                 $fileName = time().'_'.$request->profile_image->getClientOriginalName();
                 $request->file('profile_image')->storeAs('profile_image', $fileName, 'public');

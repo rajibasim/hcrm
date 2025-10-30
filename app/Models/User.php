@@ -33,6 +33,7 @@ class User extends Authenticatable implements Auditable
         'password',
         'address',
         'employee_id',
+        'sales_person_id',
         'image',
         'is_login',
         'created_by',

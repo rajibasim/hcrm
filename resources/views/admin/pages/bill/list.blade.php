@@ -54,25 +54,51 @@
                     <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Party Name" name="party_name" value="{{ isset($serach_data['party_name']) && $serach_data['party_name'] ? $serach_data['party_name'] : '' }}">
+                        <input type="text" class="form-control" placeholder="Bill No" name="bill_number" value="{{ isset($serach_data['bill_number']) && $serach_data['bill_number'] ? $serach_data['bill_number'] : '' }}">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Party Code" name="party_code" value="{{ isset($serach_data['party_code']) && $serach_data['party_code'] ? $serach_data['party_code'] : '' }}">
+                        <select class="form-control select2" name="sales_person_id" id="sales_person_id" >
+                          <option value="">Select Sales Person</option>
+                          @if($SalesPerson) && !$SalesPerson->isEmpty())
+                            @foreach ( $SalesPerson as $key => $res )
+                              <option value="{{ $res->id }}" {{ isset($serach_data['sales_person_id']) && $serach_data['sales_person_id'] == $res->id ? 'selected' : '' }}>{{ $res->name }}</option>
+                            @endforeach
+                          @endif
+                        </select>
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Phone No" name="phone_no" value="{{ isset($serach_data['phone_no']) && $serach_data['phone_no'] ? $serach_data['phone_no'] : '' }}">
+                        <select class="form-control select2" name="customer_id" id="customer_id" >
+                          <option value="">Select Customer</option>
+                          @if($customer) && !$customer->isEmpty())
+                            @foreach ( $customer as $key => $res )
+                              <option value="{{ $res->id }}" {{ isset($serach_data['customer_id']) && $serach_data['customer_id'] == $res->id ? 'selected' : '' }}>{{ $res->party_name }}-{{ $res->party_code }}-{{ $res->beat }}</option>
+                            @endforeach
+                          @endif
+                        </select>
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Beat" name="beat" value="{{ isset($serach_data['beat']) && $serach_data['beat'] ? $serach_data['beat'] : '' }}">
+                        <input type="text" class="form-control datepicker3" placeholder="Invoice Date" name="invoice_date" value="{{ isset($serach_data['invoice_date']) && $serach_data['invoice_date'] ? $serach_data['invoice_date'] : '' }}" >
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- select -->
+                      <div class="form-group">
+                        <input type="text" class="form-control datepicker3" placeholder="Start Date" name="start_date" value="{{ isset($serach_data['start_date']) && $serach_data['start_date'] ? $serach_data['start_date'] : '' }}" >
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- select -->
+                      <div class="form-group">
+                        <input type="text" class="form-control datepicker3" placeholder="End Date" name="end_date" value="{{ isset($serach_data['end_date']) && $serach_data['end_date'] ? $serach_data['end_date'] : '' }}" >
                       </div>
                     </div>
                     <div class="col-1">
@@ -114,10 +140,13 @@
                   <thead>
                     <tr>
                       <th>Bill No</th>
+                      <th>Customer</th>
                       <th>Bill Date</th>
+                      <th>Delivery Status</th>
+                      <th>Sales Person</th>
                       <th>Billed Amount</th>
-                      <th>Channel</th>
-                      <th>Status</th>
+                      <th>Paid Amount</th>
+                      <th>Balance Amount</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -126,11 +155,13 @@
                     @foreach ( $rows as $key => $res )
                     <tr> 
                       <td>{{ $res->bill_number }}</td>
+                      <td>{{ $res->customer->party_name }}</td>
                       <td>{{ $res->invoice_date }}</td>
+                      <td>{{ $res->DeliveryStatus->name }}</td>
+                      <td>{{ $res->SalesPerson->name }}</td>
                       <td>{{ $res->billed_amount }}</td>
-                      <td>{{ $res->beat }}</td>
-                      <td>{{ $res->channel }}</td>
-                      <td>{{ $res->is_active == 1 ? 'Active' : 'In-Active' }}</td>
+                      <td>{{ number_format($res->billed_amount - $res->balance_amount, 2) }}</td>
+                      <td>{{ $res->balance_amount }}</td>
                       <td style="width: 100px;">
                         @can('customer_edit')
                           <a href="{{ route('bill.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">

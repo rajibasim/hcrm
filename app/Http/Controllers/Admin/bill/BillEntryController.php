@@ -31,39 +31,38 @@ class BillEntryController extends Controller{
     ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response = Bill::where('deleted_at', '=', NULL);
-        if($request->bill_no){
-            $response = $response->where('bill_no', 'like', '%' . $request->bill_no . '%');
+        $response = Bill::where('deleted_at', '=', NULL)->with('customer')->with('DeliveryStatus')->with('SalesPerson');
+        
+        // --- Filters ---
+        if ($request->filled('bill_number')) {
+            $response->where('bill_number', 'like', '%' . $request->bill_number . '%');
             $serach_data['bill_no'] = $request->bill_no;
         }
 
-        if($request->sales_person_id){
-            $response = $response->where('sales_person_id', '=', $request->sales_person_id);
+        if ($request->filled('sales_person_id')) {
+            $response->where('sales_person_id', $request->sales_person_id);
             $serach_data['sales_person_id'] = $request->sales_person_id;
         }
 
-        if($request->beat_id){
-            $response = $response->where('beat_id', '=', $request->beat_id);
-            $serach_data['beat_id'] = $request->beat_id;
-        }
-
-        if($request->area_id){
-            $response = $response->where('area_id', '=', $request->area_id);
-            $serach_data['area_id'] = $request->area_id;
-        }
-
-        if($request->customer_id){
-            $response = $response->where('customer_id', '=', $request->customer_id);
+        if ($request->filled('customer_id')) {
+            $response->where('customer_id', $request->customer_id);
             $serach_data['customer_id'] = $request->customer_id;
         }
 
-        if($request->start_date){
-            $response = $response->whereDate('return_date', '>=', $request->start_date);
-            $serach_data['start_date'] = $request->start_date;
+        if ($request->filled('invoice_date')) {
+            $response->whereDate('invoice_date', $request->invoice_date);
+            $serach_data['invoice_date'] = $request->invoice_date;
         }
 
-        if($request->end_date){
-            $response = $response->whereDate('return_date', '<=', $request->end_date);
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $response->whereBetween('created_at', [$request->start_date, $request->end_date]);
+            $serach_data['start_date'] = $request->start_date;
+            $serach_data['end_date'] = $request->end_date;
+        } elseif ($request->filled('start_date')) {
+            $response->whereDate('created_at', '>=', $request->start_date);
+            $serach_data['start_date'] = $request->start_date;
+        } elseif ($request->filled('end_date')) {
+            $response->whereDate('created_at', '<=', $request->end_date);
             $serach_data['end_date'] = $request->end_date;
         }
 
@@ -87,8 +86,8 @@ class BillEntryController extends Controller{
         //$area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('area', 'asc')->get();
         //$beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
         $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
-        //$SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        return view('admin.pages.bill.list', compact('rows', 'metadata', 'customer'));
+        $SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
+        return view('admin.pages.bill.list', compact('rows', 'metadata', 'customer', 'SalesPerson'));
     }
 
     ### Create View

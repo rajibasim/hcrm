@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -66,4 +67,16 @@ class Bill extends Model implements Auditable{
         'updated_by',
         'is_active',
     ];
+
+    public function customer(): BelongsTo{
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function DeliveryStatus(): BelongsTo{
+        return $this->belongsTo(DeliveryStatus::class, 'delivery_status_id');
+    }
+
+    public function SalesPerson(): BelongsTo{
+        return $this->belongsTo(SalesPerson::class, 'sales_person_id');
+    }
 }
