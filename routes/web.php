@@ -63,5 +63,12 @@ Route::group(['middleware' => ['auth']], function() {
         Route::resource('bill', App\Http\Controllers\Admin\bill\BillEntryController::class);
     });
     ### Bill Entry
+
+    ### Balance Sheet
+    Route::group(['prefix' => '/admin/managebalancesheet'], function () {
+        // Balance Sheet
+        Route::resource('balance-sheet', App\Http\Controllers\Admin\balancesheet\BalanceSheetController::class);
+    });
+    ### Balance Sheet
 });
 

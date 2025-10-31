@@ -20,9 +20,7 @@ class DeliveryStatusSeeder extends Seeder
         ];
 
         foreach ($statuses as $status) {
-            DeliveryStatus::create([
-                'name'        => $status,
-            ]);
+            DeliveryStatus::firstOrCreate(['name' => $status]);
         }
     }
 }

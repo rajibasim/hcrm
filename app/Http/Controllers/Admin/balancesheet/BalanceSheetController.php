@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\masterdata;
+namespace App\Http\Controllers\Admin\balancesheet;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,27 +9,46 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\Category;
+use App\Models\BalanceSheets;
 use Validator;
 
-class CategoryController extends Controller{
+class BalanceSheetController extends Controller{
 
     public function __construct(){
-        $this->middleware('permission:category_view|category_create|category_edit|category_delete', ['only' => ['index','store']]);
-        $this->middleware('permission:category_create', ['only' => ['create','store']]);
-        $this->middleware('permission:category_edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:category_delete', ['only' => ['destroy']]);
-        $this->title = 'Category';
-        $this->slug = route('category.index');
+        $this->middleware('permission:balance_sheet_view|balance_sheet_create|balance_sheet_edit|balance_sheet_delete', ['only' => ['index','store']]);
+        $this->middleware('permission:balance_sheet_create', ['only' => ['create','store']]);
+        $this->middleware('permission:balance_sheet_edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:balance_sheet_delete', ['only' => ['destroy']]);
+        $this->title = 'Balance Sheets';
+        $this->slug = route('balance-sheet.index');
     }
 
     ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response =  Category::where('deleted_at', '=', NULL);
-        if($request->category){
-            $response = $response->where('category', 'like', '%' . $request->category . '%');
-            $serach_data['category'] = $request->category;
+        $response =  BalanceSheets::where('deleted_at', '=', NULL);
+
+        // --- Filters --
+        if ($request->filled('purpose')) {
+            $response->where('purpose', $request->purpose);
+            $serach_data['purpose'] = $request->purpose;
+        }
+
+        if ($request->filled('type')) {
+            $response->where('type', $request->type);
+            $serach_data['type'] = $request->type;
+        }
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $response->whereBetween('entry_date', [$request->start_date, $request->end_date]);
+            $serach_data['start_date'] = $request->start_date;
+            $serach_data['end_date'] = $request->end_date;
+        } elseif ($request->filled('start_date')) {
+            $response->whereDate('entry_date', '>=', $request->start_date);
+            $serach_data['start_date'] = $request->start_date;
+        } elseif ($request->filled('end_date')) {
+            $response->whereDate('entry_date', '<=', $request->end_date);
+            $serach_data['end_date'] = $request->end_date;
         }
 
         $rows = $response->paginate(20);
@@ -50,7 +69,7 @@ class CategoryController extends Controller{
             ),
         );
         
-        return view('admin.pages.category.list', compact('rows', 'metadata'));
+        return view('admin.pages.balance-sheet.list', compact('rows', 'metadata'));
     }
 
     ### Create View
@@ -74,21 +93,22 @@ class CategoryController extends Controller{
                 )
             ),
         );
-        return view('admin.pages.category.form', compact('metadata'));
+        return view('admin.pages.balance-sheet.form', compact('metadata'));
     }
 
     ### Store Data
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
-            'category' => 'required|unique:categories,category',
+            'entry_date' => 'required',
         ]); 
 
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = $request->all();
+            $data['financial_year'] = config('config.financial_year');
             $data['created_by'] = created_by();
-            $created = Category::query()->create($data);
+            $created = BalanceSheets::query()->create($data);
             if($created){
                 $flash_data = array(
                     'status' => 'success',
@@ -128,14 +148,14 @@ class CategoryController extends Controller{
             ),
         );
         
-        $details = Unit::find($id);
-        return view('admin.pages.category.form', compact('details', 'metadata'));
+        $details = BalanceSheets::find($id);
+        return view('admin.pages.balance-sheet.form', compact('details', 'metadata'));
     }
 
     ### Update Data
     public function update(Request $request, $id){
         $validator = Validator::make($request->all(), [ 
-            'category' => 'required|unique:categories,category,' . $id,
+            'entry_date' => 'required',
         ]); 
 
         if ($validator->fails()) { 
@@ -143,7 +163,7 @@ class CategoryController extends Controller{
         }else{
             $data = $request->all();
             $data['updated_by'] = updated_by();
-            $update = Unit::find($id);
+            $update = BalanceSheets::find($id);
             $update = $update->update($data);
             if($update){
                 $flash_data = array(
@@ -164,7 +184,7 @@ class CategoryController extends Controller{
 
     ### Delete Data
     public function destroy($id){
-        $delete = Unit::find($id);
+        $delete = BalanceSheets::find($id);
         $delete = $delete->delete();
 
         if($delete){

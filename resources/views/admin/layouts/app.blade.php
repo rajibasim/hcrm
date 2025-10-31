@@ -225,6 +225,27 @@
                                     @endcan
                                 </li>
                             @endcan
+                            @canany(['balance_sheet_view'])
+                                <li class="nav-item {{ Request::is("admin/managebalancesheet*") ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ Request::is("admin/managebalancesheet*") ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-list-ul"></i>
+                                        <p>
+                                            Manage Balance Sheet
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    @can('balance_sheet_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('balance-sheet.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/balance-sheet*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Balance Sheet</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                </li>
+                            @endcan 
                         </ul>
                     </nav>
                     <!-- /.sidebar-menu -->

@@ -141,6 +141,7 @@ class BillEntryController extends Controller{
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
             $data = array(
+                'financial_year' => config('config.financial_year'),
                 'bill_number' => $request->bill_number, 
                 'invoice_date' => $request->invoice_date, 
                 'delivery_status_update_date' => $request->delivery_status_update_date, 

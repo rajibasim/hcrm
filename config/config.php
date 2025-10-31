@@ -11,4 +11,10 @@ return [
 
     //
     'version' => '1.0.0',
+    'financial_year_list' => array(
+    	'2025-2026' => '1',
+    	'2026-2027' => '2',
+    	'2027-2028' => '3',
+    ),
+    'financial_year' => 1,  
 ];

@@ -16,6 +16,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * Class Bill
  *
  * @property int $id
+ * @property int $financial_year
  * @property string $bill_number
  * @property date $invoice_date
  * @property int $customer_id
@@ -48,6 +49,7 @@ class Bill extends Model implements Auditable{
     ];
 
     protected $fillable = [
+        'financial_year',
         'bill_number',
         'invoice_date',
         'customer_id',

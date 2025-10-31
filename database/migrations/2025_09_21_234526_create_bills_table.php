@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
+            $table->integer('financial_year')->default('0');
             $table->string('bill_number')->unique();
             $table->date('invoice_date')->nullable();
-            $table->unsignedInteger('customer_id')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->cascadeOnDelete();
             $table->foreignId('sales_person_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->date('delivery_status_update_date')->nullable();
             $table->foreignId('delivery_status_id')->nullable()->constrained('delivery_statuses')->cascadeOnDelete();

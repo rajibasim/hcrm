@@ -44,6 +44,10 @@ class PermissionGroupSeeder extends Seeder
             [
                 'name' => 'report',
                 'label' => 'Report'
+            ],
+            [
+                'name' => 'balance_sheet',
+                'label' => 'Balance Sheet'
             ]
         ];
 
