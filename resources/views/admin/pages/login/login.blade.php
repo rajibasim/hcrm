@@ -9,14 +9,14 @@
         <!-- Google Font: Source Sans Pro -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('public/admin-assets/plugins/fontawesome-free/css/all.min.css') }}">
         <!-- icheck bootstrap -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('public/admin-assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
         <!-- Theme style -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/css/adminlte.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('public/admin-assets/css/adminlte.min.css') }}">
          <!-- Toastr -->
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css?version='.config('app.version')) }}">
-        <link rel="stylesheet" href="{{ asset('admin-assets/plugins/toastr/toastr.min.css?version='.config('app.version')) }}">
+        <link rel="stylesheet" href="{{ asset('public/admin-assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css?version='.config('app.version')) }}">
+        <link rel="stylesheet" href="{{ asset('public/admin-assets/plugins/toastr/toastr.min.css?version='.config('app.version')) }}">
    </head>
    </head>
    <body class="hold-transition login-page">
@@ -74,16 +74,16 @@
       </div>
       <!-- /.login-box -->
       <!-- jQuery -->
-      <script src="{{ asset('admin-assets/plugins/jquery/jquery.min.js') }}"></script>
+      <script src="{{ asset('public/admin-assets/plugins/jquery/jquery.min.js') }}"></script>
       <!-- Bootstrap 4 -->
-      <script src="{{ asset('admin-assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+      <script src="{{ asset('public/admin-assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
       <!-- SweetAlert2 -->
-      <script src="{{ asset('admin-assets/plugins/sweetalert2/sweetalert2.min.js?version='.config('app.version')) }}"></script>
+      <script src="{{ asset('public/admin-assets/plugins/sweetalert2/sweetalert2.min.js?version='.config('app.version')) }}"></script>
       <!-- Toastr -->
-      <script src="{{ asset('admin-assets/plugins/toastr/toastr.min.js?version='.config('app.version')) }}"></script>
+      <script src="{{ asset('public/admin-assets/plugins/toastr/toastr.min.js?version='.config('app.version')) }}"></script>
       <!-- AdminLTE App -->
-      <script src="{{ asset('admin-assets/js/adminlte.min.js') }}"></script>
-      <script src="{{ asset('admin-assets/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+      <script src="{{ asset('public/admin-assets/js/adminlte.min.js') }}"></script>
+      <script src="{{ asset('public/admin-assets/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
       <script type="text/javascript">
         $(document).ready(function() {
             @if($errors->any())

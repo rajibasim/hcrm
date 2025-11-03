@@ -125,7 +125,7 @@
                         @if($res->image)
                           <img src="{{ asset('storage/profile_image/'.$res->image) }}" alt="#ProfileImage" width="50px" height="50px"></td>
                         @else
-                          <img src="{{ asset('admin-assets/img/no-image.jpg') }}" alt="#ProfileImage" width="50px" height="50px"></td>
+                          <img src="{{ asset('public/admin-assets/img/no-image.jpg') }}" alt="#ProfileImage" width="50px" height="50px"></td>
                         @endif
                       <td>{{ $res->name }}</td>
                       <td>{{ $res->email }}</td>

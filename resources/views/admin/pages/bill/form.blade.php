@@ -214,7 +214,7 @@
                                         <img style="width: 40px; height: 40px" src="{{ asset('uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}">
                                       </a>
                                     @else
-                                      <img style="width: 40px; height: 40px" src="{{ asset('admin-assets/img/no-image.jpg') }}">
+                                      <img style="width: 40px; height: 40px" src="{{ asset('public/admin-assets/img/no-image.jpg') }}">
                                     @endif
                                   </td>
                                   <td width="10%">
