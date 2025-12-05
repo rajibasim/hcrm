@@ -358,8 +358,6 @@ $(document).ready(function() {
         balance_amount();
     });
 
-    
-
     $(document).on('change', 'input.attachment', function() {
         var $row = $(this).closest('tr'); // get the row
         var $hiddenInput = $row.find('.attachment_hidden'); // find hidden input in the same row
@@ -456,6 +454,8 @@ $(document).ready(function() {
         $("#balance_amount").html(total.toFixed(2));
         $(".balance_amount").val(total);
     }
+    
+    balance_amount();
 });
 </script>
 @endsection

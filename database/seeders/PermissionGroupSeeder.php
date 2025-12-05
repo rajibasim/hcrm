@@ -48,6 +48,18 @@ class PermissionGroupSeeder extends Seeder
             [
                 'name' => 'balance_sheet',
                 'label' => 'Balance Sheet'
+            ],
+            [
+                'name' => 'payment_history',
+                'label' => 'Payment History'
+            ],
+            [
+                'name' => 'balance_report',
+                'label' => 'Balance Report'
+            ],
+            [
+                'name' => 'balance_transfer',
+                'label' => 'Balance Transfer'
             ]
         ];
 

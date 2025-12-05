@@ -183,11 +183,12 @@ class BillEntryController extends Controller{
                             $payment->online_amount = $request->online_amount[$index] ?? 0;
                             $payment->cash_amount = $request->cash_amount[$index] ?? 0;
                             $payment->balance_amount = $total; // Total payment receved on this day
+                            $payment->is_active = 0;
                             $payment->created_by = created_by();
                             $payment->updated_by = updated_by();
                             
-                            $online_amount = $online_amount + $request->online_amount[$index] ?? 0;
-                            $cash_amount = $cash_amount + $request->cash_amount[$index] ?? 0;
+                            //$online_amount = $online_amount + $request->online_amount[$index] ?? 0;
+                            //$cash_amount = $cash_amount + $request->cash_amount[$index] ?? 0;
 
                             // Handle file upload if any
                             $payment->attachment = '';
@@ -215,13 +216,13 @@ class BillEntryController extends Controller{
                 $created = StatusHistory::query()->create($status_data);
 
                 //update bill table
-                $billdata['updated_by'] = updated_by();
+                /*$billdata['updated_by'] = updated_by();
                 $billdata['online_amount'] = $online_amount;
                 $billdata['cash_amount'] = $cash_amount;
                 $update = Bill::find($bill_id);
-                $update = $update->update($billdata);
+                $update = $update->update($billdata);*/
 
-                if($update){
+                if($created){
                     $flash_data = array(
                         'status' => 'success',
                         'message' => $this->title.' successfully created.',
@@ -270,7 +271,7 @@ class BillEntryController extends Controller{
         $DeliveryStatus = DeliveryStatus::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('name', 'asc')->get();
         $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
         $SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        $paymentHistory = PaymentHistory::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->where('bill_id', '=', $id)->get();
+        $paymentHistory = PaymentHistory::where('deleted_at', '=', NULL)->where('bill_id', '=', $id)->get();
         return view('admin.pages.bill.form', compact('details', 'metadata', 'customer', 'DeliveryStatus', 'SalesPerson', 'paymentHistory'));
     }
 
@@ -351,8 +352,8 @@ class BillEntryController extends Controller{
                             $payment->created_by = created_by();
                             $payment->updated_by = updated_by();
                             
-                            $online_amount = $online_amount + $request->online_amount[$index] ?? 0;
-                            $cash_amount = $cash_amount + $request->cash_amount[$index] ?? 0;
+                            //$online_amount = $online_amount + $request->online_amount[$index] ?? 0;
+                            //$cash_amount = $cash_amount + $request->cash_amount[$index] ?? 0;
 
                             // Handle file upload if any
                             $payment->attachment = '';
@@ -380,12 +381,12 @@ class BillEntryController extends Controller{
                 $created = StatusHistory::query()->create($status_data);
 
                 //update bill table
-                $billdata['updated_by'] = updated_by();
+                /*$billdata['updated_by'] = updated_by();
                 $billdata['online_amount'] = $online_amount;
                 $billdata['cash_amount'] = $cash_amount;
-                $updated = $update->update($billdata);
+                $updated = $update->update($billdata);*/
 
-                if($updated){
+                if($created){
                     $flash_data = array(
                         'status' => 'success',
                         'message' => $this->title.' successfully updated.',

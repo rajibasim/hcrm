@@ -68,13 +68,11 @@
                     <div class="col-sm-3">
                       <!-- select -->
                       <div class="form-group">
-                        <label>Purpose</label>
-                        <select class="form-control select2" name="purpose" id="purpose">
-                          <option value="1" {{ isset($details->purpose) && $details->purpose == 1 ? 'selected' : '' }}>Asset</option>
-                          <option value="2" {{ isset($details->purpose) && $details->purpose == 2 ? 'selected' : '' }}>Liability</option>
-                          <option value="3" {{ isset($details->purpose) && $details->purpose == 3 ? 'selected' : '' }}>Equity</option>
-                          <option value="4" {{ isset($details->purpose) && $details->purpose == 4 ? 'selected' : '' }}>Income</option>
-                          <option value="5" {{ isset($details->purpose) && $details->purpose == 5 ? 'selected' : '' }}>Expense</option>
+                        <label>Type</label>
+                        <select class="form-control select2" name="type" id="type">
+                          <option value="">Please Select</option>
+                          <option value="1" {{ isset($details->type) && $details->type == 1 ? 'selected' : '' }}>Credit</option>
+                          <option value="2" {{ isset($details->type) && $details->type == 2 ? 'selected' : '' }}>Debit</option>
                         </select>
                       </div>
                     </div>
@@ -82,9 +80,23 @@
                       <!-- select -->
                       <div class="form-group">
                         <label>Purpose</label>
-                        <select class="form-control select2" name="type" id="type">
-                          <option value="1" {{ isset($details->type) && $details->type == 1 ? 'selected' : '' }}>Credit</option>
-                          <option value="2" {{ isset($details->type) && $details->type == 2 ? 'selected' : '' }}>Debit</option>
+                        <select class="form-control" name="purpose" id="purpose">
+                          <option value="">Please Select</option>
+                          <span id="purpose1">
+                            <option value="1" {{ isset($details->purpose) && $details->purpose == 1 ? 'selected' : '' }}>Cash</option>
+                            <option value="2" {{ isset($details->purpose) && $details->purpose == 2 ? 'selected' : '' }}>Online/Phone-Pe</option>
+                            <option value="3" {{ isset($details->purpose) && $details->purpose == 3 ? 'selected' : '' }}>Stock</option>
+                            <option value="4" {{ isset($details->purpose) && $details->purpose == 4 ? 'selected' : '' }}>Other Stock</option>
+                            <option value="5" {{ isset($details->purpose) && $details->purpose == 5 ? 'selected' : '' }}>Damage</option>
+                          </span>
+                          <span id="purpose2">
+                            <option value="6" {{ isset($details->purpose) && $details->purpose == 6 ? 'selected' : '' }}>Invoice</option>
+                            <option value="7" {{ isset($details->purpose) && $details->purpose == 7 ? 'selected' : '' }}>Daliy Expenses</option>
+                            <option value="8" {{ isset($details->purpose) && $details->purpose == 8 ? 'selected' : '' }}>Salary</option>
+                            <option value="9" {{ isset($details->purpose) && $details->purpose == 9 ? 'selected' : '' }}>Rent</option>
+                            <option value="10" {{ isset($details->purpose) && $details->purpose == 10 ? 'selected' : '' }}>Oil</option>
+                            <option value="11" {{ isset($details->purpose) && $details->purpose == 11 ? 'selected' : '' }}>Other</option>
+                          </span>
                         </select>
                       </div>
                     </div>
@@ -133,6 +145,12 @@ $(document).ready(function() {
           entry_date: {
             required: true,
           },
+          type: {
+            required: true,
+          },
+          purpose: {
+            required: true,
+          },
           amount: {
             required: true,
             number: true,
@@ -150,6 +168,31 @@ $(document).ready(function() {
         unhighlight: function (element, errorClass, validClass) {
           $(element).removeClass('is-invalid');
         }
+    });
+
+    var typeVal = $("#type").val();
+    if (typeVal === "1") {
+          // Enable options 1–5
+          $("#purpose1").show();
+          $("#purpose2").hide();
+    }else if (typeVal === "2") {
+          // Enable options 6–11
+          $("#purpose2").show();
+          $("#purpose1").hide();
+    }
+
+    $("#type").change(function() {
+      var typeVal = $(this).val();
+      $("#purpose").val("").trigger("change"); // clear selected value
+      if (typeVal === "1") {
+            // Enable options 1–5
+            $("#purpose1").show();
+            $("#purpose2").hide();
+      }else if (typeVal === "2") {
+            // Enable options 6–11
+            $("#purpose2").show();
+            $("#purpose1").hide();
+      }
     });
 });
 </script>
