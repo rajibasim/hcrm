@@ -61,6 +61,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => '/admin/managebill'], function () {
         // Bill Entry
         Route::resource('bill', App\Http\Controllers\Admin\bill\BillEntryController::class);
+        Route::resource('payment-history', App\Http\Controllers\Admin\bill\PaymentHistoryController::class);
     });
     ### Bill Entry
 

@@ -51,12 +51,11 @@
               <div class="card-body">
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-sm-4">
-                      <!-- select -->
+                    <!-- <div class="col-sm-4">
                       <div class="form-group">
                         <input type="text" class="form-control" placeholder="Bill No" name="bill_number" value="{{ isset($serach_data['bill_number']) && $serach_data['bill_number'] ? $serach_data['bill_number'] : '' }}">
                       </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
@@ -68,25 +67,6 @@
                             @endforeach
                           @endif
                         </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-4">
-                      <!-- select -->
-                      <div class="form-group">
-                        <select class="form-control select2" name="customer_id" id="customer_id" >
-                          <option value="">Select Customer</option>
-                          @if($customer) && !$customer->isEmpty())
-                            @foreach ( $customer as $key => $res )
-                              <option value="{{ $res->id }}" {{ isset($serach_data['customer_id']) && $serach_data['customer_id'] == $res->id ? 'selected' : '' }}>{{ $res->party_name }}-{{ $res->party_code }}-{{ $res->beat }}</option>
-                            @endforeach
-                          @endif
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-4">
-                      <!-- select -->
-                      <div class="form-group">
-                        <input type="text" class="form-control datepicker3" placeholder="Invoice Date" name="invoice_date" value="{{ isset($serach_data['invoice_date']) && $serach_data['invoice_date'] ? $serach_data['invoice_date'] : '' }}" >
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -124,13 +104,13 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('bill_entry_view')
+              @can('payment_history_view')
                 <div class="card-header">
                   <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
                     <div class="float-right">
-                        <a href="{{ route('bill.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
+                        <!-- <a href="{{ route('bill.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
                           <i class="fa fa-plus" aria-hidden="true"></i>
-                        </a>
+                        </a> -->
                     </div>
                 </div>
               @endcan
@@ -140,13 +120,13 @@
                   <thead>
                     <tr>
                       <th>Bill No</th>
-                      <th>Customer</th>
-                      <th>Bill Date</th>
-                      <th>Delivery Status</th>
+                      <th>Payment Date</th>
+                      <th>Online</th>
+                      <th>Cash</th>
+                      <th>Total</th>
+                      <th>Attachment</th>
                       <th>Sales Person</th>
-                      <th>Billed Amount</th>
-                      <th>Paid Amount</th>
-                      <th>Balance Amount</th>
+                      <th>Created At</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -154,30 +134,46 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                     <tr> 
-                      <td>{{ $res->bill_number }}</td>
-                      <td>{{ $res->customer->party_name }}</td>
-                      <td>{{ $res->invoice_date }}</td>
-                      <td>{{ $res->DeliveryStatus->name }}</td>
-                      <td>{{ $res->SalesPerson->name }}</td>
-                      <td>{{ $res->billed_amount }}</td>
-                      <td>{{ number_format($res->billed_amount - $res->balance_amount, 2) }}</td>
+                      <td><a href="{{ route('bill.show',$res->bill->id) }}"> {{ $res->bill->bill_number }}</a></td>
+                      <td>{{ $res->payment_date }}</td>
+                      <td>{{ $res->online_amount }}</td>
+                      <td>{{ $res->cash_amount }}</td>
                       <td>{{ $res->balance_amount }}</td>
+                      <td>
+                        @if($res->attachment)
+                          <a href="{{ asset('public/uploads/attachment/'.$res->bill->bill_number.'/'.$res->attachment) }}" data-toggle="lightbox" data-gallery="gallery">
+                            <img style="width: 40px; height: 40px" src="{{ asset('public/uploads/attachment/'.$res->bill->bill_number.'/'.$res->attachment) }}">
+                          </a>
+                        @else
+                          <img style="width: 40px; height: 40px" src="{{ asset('public/admin-assets/img/no-image.jpg') }}">
+                        @endif
+                      </td>
+                      <td>{{ $res->bill->SalesPerson->name }}</td>
+                      <td>{{ date('Y-m-d', strtotime($res->created_at)) }}</td>
+                      @if($res->is_active == 0)
                       <td style="width: 100px;">
-                        @can('bill_entry_edit')
-                          <a href="{{ route('bill.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        @can('payment_history_edit')
+                          <a href="{{ route('payment-history.edit',$res->id) }}" class="btn btn-success btn-sm accept" data-toggle="tooltip" data-placement="top" title="Accept">
+                            <i class="fas fa-check" aria-hidden="true"></i>
                           </a>
                         @endcan
-                        @can('bill_entry_delete')
-                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('bill.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
+                        @can('payment_history_delete')
+                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('payment-history.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
                               <input name="_method" type="hidden" value="DELETE">
-                              <a id="{{ $res->id }}" href="javascript:void(0);" class="btn btn-danger btn-sm single" data-toggle="tooltip" data-placement="top" title="Delete">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              <a id="{{ $res->id }}" href="javascript:void(0);" class="btn btn-danger btn-sm single" data-toggle="tooltip" data-placement="top" title="Reject">
+                                <i class="fa fa-times" aria-hidden="true"></i>
                               </a>
                             @csrf
                           </form>
                         @endcan
                       </td>
+                      @else
+                      <td style="width: 100px;">
+                        <a href="javascript:void(0);" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Not Required">
+                            <i class="fas fa-ban" aria-hidden="true"></i>
+                          </a>
+                      </td>
+                      @endif
                     </tr>
                     @endforeach
                   @else
@@ -229,13 +225,32 @@ $(document).ready(function() {
         e.preventDefault();
         var delete_url = $(this).attr('href');
         Swal.fire({
-          title: 'Are you sure you want to delete this?',
+          title: 'Are you sure you want to reject this?',
           text: "You won't be able to revert this!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
+          confirmButtonText: 'Yes, reject it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var id = $(this).attr('id');
+            $('form#deleteForm'+id).submit();
+          }
+        })
+    });
+
+    $(".accept").on("click", function(e) {
+        e.preventDefault();
+        var delete_url = $(this).attr('href');
+        Swal.fire({
+          title: 'Are you sure you want to accept this?',
+          text: "You won't be able to accept this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, reject it!'
         }).then((result) => {
           if (result.isConfirmed) {
             var id = $(this).attr('id');

@@ -210,8 +210,8 @@
                                   </td>
                                   <td width="20%">
                                     @if($rres->attachment)
-                                      <a href="{{ asset('public/uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}" data-toggle="lightbox" data-gallery="gallery">
-                                        <img style="width: 40px; height: 40px" src="{{ asset('public/uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}">
+                                      <a href="{{ asset('uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}" data-toggle="lightbox" data-gallery="gallery">
+                                        <img style="width: 40px; height: 40px" src="{{ asset('uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}">
                                       </a>
                                     @else
                                       <img style="width: 40px; height: 40px" src="{{ asset('public/admin-assets/img/no-image.jpg') }}">

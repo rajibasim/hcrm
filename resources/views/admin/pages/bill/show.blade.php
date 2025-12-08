@@ -210,29 +210,22 @@
                                   </td>
                                   <td width="20%">
                                     @if($rres->attachment)
-                                      <a href="{{ asset('public/uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}" data-toggle="lightbox" data-gallery="gallery">
-                                        <img style="width: 40px; height: 40px" src="{{ asset('public/uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}">
+                                      <a href="{{ asset('uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}" data-toggle="lightbox" data-gallery="gallery">
+                                        <img style="width: 40px; height: 40px" src="{{ asset('uploads/attachment/'.$details->bill_number.'/'.$rres->attachment) }}">
                                       </a>
                                     @else
                                       <img style="width: 40px; height: 40px" src="{{ asset('public/admin-assets/img/no-image.jpg') }}">
                                     @endif
                                   </td>
                                   <td width="10%">
-                                    @if($rres->is_active == 1)
                                       <a href="javascript:void(0);" class="btn btn-warning btn-sm" id="{{ isset($rres->id) ? $rres->id : 0 }}">
-                                      <i class="fa fa-ban"></i>
-                                    </a>
-                                    @else
-                                      <a href="javascript:void(0);" class="btn btn-danger btn-sm removeOld" id="{{ isset($rres->id) ? $rres->id : 0 }}">
-                                      <i class="fa fa-minus"></i>
-                                    </a>
-                                    @endif
+                                      <i class="fa fa-ban"></i></a>
                                   </td>
                                 </tr>
                               @endforeach
                             @endif
                             <input class="form-control" type="hidden" value="" name="old_ids" id="old_ids">
-                            <tr class="addMore">
+                            <tr class="addMore" style="display: none;">
                               <td width="30%" style="width: 10px;">
                                 <input class="form-control datepicker3" placeholder="Date" type="text" name="payment_date[]">
                               </td>
@@ -462,6 +455,7 @@ $(document).ready(function() {
     }
     
     balance_amount();
+    $('input, select, textarea, button').prop('disabled', true);
 });
 </script>
 @endsection

@@ -17,30 +17,42 @@ use App\Models\PaymentHistory;
 use App\Models\StatusHistory;
 use Validator;
 
-class BillEntryController extends Controller{
+class PaymentHistoryController extends Controller{
 
     public function __construct(){
-        $this->middleware('permission:bill_entry_view|bill_entry_create|bill_entry_edit|bill_entry_delete', ['only' => ['index','store']]);
-        $this->middleware('permission:bill_entry_create', ['only' => ['create','store']]);
-        $this->middleware('permission:bill_entry_edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:bill_entry_delete', ['only' => ['destroy']]);
-        $this->title = 'Bill Entry';
-        $this->slug = route('bill.index');
+        $this->middleware('permission:payment_history_view|payment_history_create|payment_history_edit|payment_history_delete', ['only' => ['index','store']]);
+        $this->middleware('permission:payment_history_create', ['only' => ['create','store']]);
+        $this->middleware('permission:payment_history_edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:payment_history_delete', ['only' => ['destroy']]);
+        $this->title = 'Payment History';
+        $this->slug = route('payment-history.index');
     }
 
     ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response = Bill::where('deleted_at', '=', NULL)->with('customer')->with('DeliveryStatus')->with('SalesPerson')->orderBy('id', 'desc');
+        $response = PaymentHistory::where('deleted_at', '=', NULL)->with('bill.SalesPerson')->orderBy('id', 'desc');
         
+        // --- Filters ---
+        if ($request->filled('customer_id')) {
+            $response->whereHas('bill.customer', function ($q) use ($request) {
+                $q->where('customer_id', $request->customer_name);
+            });
+
+            $serach_data['customer_name'] = $request->customer_name;
+        }
+
         // --- Filters ---
         if ($request->filled('bill_number')) {
             $response->where('bill_number', 'like', '%' . $request->bill_number . '%');
-            $serach_data['bill_no'] = $request->bill_no;
+            $serach_data['bill_no'] = $request->bill_number;
         }
 
         if ($request->filled('sales_person_id')) {
-            $response->where('sales_person_id', $request->sales_person_id);
+            $response->whereHas('bill.SalesPerson', function ($q) use ($request) {
+                $q->where('sales_person_id', $request->sales_person_id);
+            });
+
             $serach_data['sales_person_id'] = $request->sales_person_id;
         }
 
@@ -83,11 +95,9 @@ class BillEntryController extends Controller{
                 )
             ),
         );
-        //$area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('area', 'asc')->get();
-        //$beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
-        $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
+
         $SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        return view('admin.pages.bill.list', compact('rows', 'metadata', 'customer', 'SalesPerson'));
+        return view('admin.pages.payment-history.list', compact('rows', 'metadata', 'SalesPerson'));
     }
 
     ### Create View
@@ -412,7 +422,7 @@ class BillEntryController extends Controller{
 
     ### Delete Data
     public function destroy($id){
-        $delete = Bill::withTrashed()->find($id);
+        $delete = PaymentHistory::withTrashed()->find($id);
         $delete = $delete->forceDelete();
         if($delete){
             $flash_data = array(
@@ -433,7 +443,7 @@ class BillEntryController extends Controller{
     ### View
     public function show($id){
         $metadata = array(
-            'page_title' => $this->title . ' View',
+            'page_title' => $this->title . ' Details',
             'page_url' => $this->slug,
             'serach_data' => [],
             'breadcumb' => array(
@@ -447,16 +457,18 @@ class BillEntryController extends Controller{
                 ),
                 array(
                     'url' => '',
-                    'title' => 'View',  
+                    'title' => 'Details',  
                 )
             ),
         );
         
-        $details = Bill::find($id);
-        $DeliveryStatus = DeliveryStatus::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('name', 'asc')->get();
-        $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
-        $SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        $paymentHistory = PaymentHistory::where('deleted_at', '=', NULL)->where('bill_id', '=', $id)->get();
-        return view('admin.pages.bill.show', compact('details', 'metadata', 'customer', 'DeliveryStatus', 'SalesPerson', 'paymentHistory'));
+        $details = BillEntry::find($id);
+        $beat = Beat::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('beat', 'asc')->get();
+        $area = Area::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->where('beat_id', '=', $details->beat_id)->orderBy('area', 'asc')->get();
+        $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->where('beat_id', '=', $details->beat_id)->where('area_id', '=', $details->area_id)->orderBy('id', 'asc')->get();
+        $product = Product::with('unit')->with('category')->where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
+        $sales_person = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
+        $productReturn = BillEntryProduct::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->where('payment_history_id', '=', $id)->get();
+        return view('admin.pages.bill-entry.show', compact('details', 'metadata', 'area', 'beat', 'customer', 'sales_person', 'productReturn'));
     }
 }

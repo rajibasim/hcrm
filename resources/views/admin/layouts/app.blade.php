@@ -223,6 +223,16 @@
                                             </li>
                                         </ul>
                                     @endcan
+                                    @can('bill_entry_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('payment-history.index') }}" class="nav-link {{ Request::is("admin/managebill/payment-history*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Payment Histoy</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
                                 </li>
                             @endcan
                             @canany(['balance_sheet_view'])
