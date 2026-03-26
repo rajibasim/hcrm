@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Permission;
 use App\Models\Area;
 use App\Models\Beat;
 use App\Models\Customer;
+use App\Models\Bill;
 use Validator;
 
 class CustomerController extends Controller{
@@ -198,5 +199,32 @@ class CustomerController extends Controller{
         
         Session::put('flash_data', $flash_data); 
         return redirect($this->slug);
+    }
+
+    ### View
+    public function show($id){
+        $metadata = array(
+            'page_title' => $this->title . ' View',
+            'page_url' => $this->slug,
+            'serach_data' => [],
+            'breadcumb' => array(
+                array(
+                    'url' => '/dashboard',
+                    'title' => 'Home',  
+                ),
+                array(
+                    'url' => $this->slug,
+                    'title' => $this->title,  
+                ),
+                array(
+                    'url' => '',
+                    'title' => 'View',  
+                )
+            ),
+        );
+        
+        $details = Customer::find($id);
+        $rows = Bill::where('deleted_at', '=', NULL)->where('customer_id', $id)->with('customer')->with('DeliveryStatus')->with('SalesPerson')->orderBy('id', 'desc')->get();
+        return view('admin.pages.customer.show', compact('details', 'metadata', 'rows'));
     }
 }

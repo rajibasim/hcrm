@@ -204,7 +204,7 @@
                                     @endcan
                                 </li>
                             @endcan
-                            @canany(['bill_entry_view'])
+                            @canany(['bill_entry_view', 'bill_payment_history_view'])
                                 <li class="nav-item {{ Request::is("admin/managebill*") ? 'menu-open' : '' }}">
                                     <a href="#" class="nav-link {{ Request::is("admin/managebill*") ? 'active' : '' }}">
                                         <i class="nav-icon fa fa-list-ul"></i>
@@ -223,19 +223,19 @@
                                             </li>
                                         </ul>
                                     @endcan
-                                    @can('bill_entry_view')
+                                    @can('bill_payment_history_view')
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
-                                                <a href="{{ route('payment-history.index') }}" class="nav-link {{ Request::is("admin/managebill/payment-history*") ? 'active' : '' }}">
+                                                <a href="{{ route('bil-payment-history.index') }}" class="nav-link {{ Request::is("admin/managebill/bil-payment-history*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
-                                                    <p>Payment Histoy</p>
+                                                    <p>Bill Payment Histoy</p>
                                                 </a>
                                             </li>
                                         </ul>
                                     @endcan
                                 </li>
                             @endcan
-                            @canany(['balance_sheet_view'])
+                            @canany(['balance_sheet_view', 'payment_history_view', 'credit_report_view', 'balance_transfer_view', 'inventory_purchase_view', 'inventory_billed_view', 'expenditure_history_view'])
                                 <li class="nav-item {{ Request::is("admin/managebalancesheet*") ? 'menu-open' : '' }}">
                                     <a href="#" class="nav-link {{ Request::is("admin/managebalancesheet*") ? 'active' : '' }}">
                                         <i class="nav-icon fa fa-list-ul"></i>
@@ -250,6 +250,76 @@
                                                 <a href="{{ route('balance-sheet.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/balance-sheet*") ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
                                                     <p>Balance Sheet</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('inventory_purchase_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('inventory-history.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/inventory-history*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Inventory Purchase</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('inventory_billed_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('inventory-billed.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/inventory-billed*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Inventory Billed</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('balance_transfer_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('balance-transfer.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/balance-transfer*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Balance Transfer</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('payment_history_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('payment-history.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/payment-history*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Payment History</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('expenditure_history_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('expenditure-history.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/expenditure-history*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Expenditure History</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('credit_report_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('credit-report.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/credit-report*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Credit Report</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endcan
+                                    @can('credit_report_view')
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{ route('credit-history.index') }}" class="nav-link {{ Request::is("admin/managebalancesheet/credit-history*") ? 'active' : '' }}">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Credit History</p>
                                                 </a>
                                             </li>
                                         </ul>

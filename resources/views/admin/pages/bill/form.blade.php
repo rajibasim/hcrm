@@ -127,7 +127,7 @@
                       <!-- text input -->
                       <div class="form-group">
                         <label>Billed Amount</label>
-                        <input type="number" class="form-control billed_amount" placeholder="Billed Amount" name="billed_amount" value="{{ isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0' }}" required="">
+                        <input type="number" class="form-control billed_amount" placeholder="Billed Amount" name="billed_amount" value="{{ isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0' }}" required="" {{ isset($details->billed_amount) && $details->billed_amount ? 'readonly=""' : '' }}>
                         <input type="hidden" class="billed_amount_hidden" name="billed_amount_hidden" value="{{ isset($details->billed_amount) && $details->billed_amount ? $details->billed_amount : '0' }}">
                       </div>
                     </div>
@@ -220,12 +220,13 @@
                                   <td width="10%">
                                     @if($rres->is_active == 1)
                                       <a href="javascript:void(0);" class="btn btn-warning btn-sm" id="{{ isset($rres->id) ? $rres->id : 0 }}">
-                                      <i class="fa fa-ban"></i>
-                                    </a>
+                                        <i class="fa fa-ban"></i>
+                                      </a>
+                                      <input type="hidden" name="accepted_amount" class="accepted_amount" value="{{ $rres->balance_amount }}">
                                     @else
                                       <a href="javascript:void(0);" class="btn btn-danger btn-sm removeOld" id="{{ isset($rres->id) ? $rres->id : 0 }}">
-                                      <i class="fa fa-minus"></i>
-                                    </a>
+                                        <i class="fa fa-minus"></i>
+                                      </a>
                                     @endif
                                   </td>
                                 </tr>
@@ -258,6 +259,7 @@
                                <td colspan="4">Balance Amount</td>
                                <td colspan="1" id="balance_amount">{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '0.00' }}</td>
                                <input type="hidden" class="balance_amount" name="balance_amount" value="{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '0' }}">
+                               <input type="hidden" class="balance_amount_checker" id="balance_amount_checker" name="balance_amount_checker" value="{{ isset($details->balance_amount) && $details->balance_amount ? $details->balance_amount : '0.00' }}">
                             </tr>
                          </tbody>
                       </table>
@@ -448,6 +450,12 @@ $(document).ready(function() {
             offline_total = offline_total + parseFloat($(offline[i]).val());
         }
 
+        var accepted_amount = 0;
+        var ac_amount = $(".accepted_amount");
+        for(var i = 0; i < ac_amount.length; i++){
+            accepted_amount = accepted_amount + parseFloat($(ac_amount[i]).val());
+        }
+
         var billed_amount_hidden = parseFloat($('.billed_amount_hidden').val());
         var return_amount_hidden = parseFloat($('.return_amount_hidden').val());
         var damage_amount_hidden = parseFloat($('.damage_amount_hidden').val());
@@ -457,8 +465,23 @@ $(document).ready(function() {
 
         var total = billed_amount_hidden - (online_total + offline_total + return_amount_hidden + damage_amount_hidden + adjusment_amount_hidden);
 
+        var new_billed_amount = billed_amount_hidden - (return_amount_hidden + damage_amount_hidden + adjusment_amount_hidden + accepted_amount);
+
+        $("#balance_amount_checker").val(total.toFixed(2));
         $("#balance_amount").html(total.toFixed(2));
-        $(".balance_amount").val(total);
+        $(".balance_amount").val(new_billed_amount);
+
+        /*if(total.toFixed(2) < 0){
+            Swal.fire({
+                title: 'Total amount not acceptable in negative!',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            }).then(() => {
+                // refresh page after OK
+                location.reload();
+            });
+        }*/
     }
     
     balance_amount();

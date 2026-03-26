@@ -54,7 +54,7 @@
                     <div class="col-sm-3">
                       <!-- select -->
                       <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Bill Number" name="bill_number" value="{{ isset($serach_data['bill_number']) && $serach_data['bill_number'] ? $serach_data['bill_number'] : '' }}" >
+                        <input type="text" class="form-control" placeholder="Invoice No" name="invoice_number" value="{{ isset($serach_data['invoice_number']) && $serach_data['invoice_number'] ? $serach_data['invoice_number'] : '' }}" >
                       </div>
                     </div>
                     <div class="col-sm-3">
@@ -108,9 +108,12 @@
                   <thead>
                     <tr>
                       <th>Date</th>
-                      <th>Bill No</th>
+                      <th>Invoice No</th>
+                      <th>Inventory</th>
                       <th>Online</th>
                       <th>Cash</th>
+                      <th>Claim</th>
+                      <th>Note</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -119,20 +122,27 @@
                     @foreach ( $rows as $key => $res )
                       <tr> 
                         <td rowspan="3">{{ $res->entry_date }}</td>
-                        <td rowspan="3">{{ $res->billData->bill_number }}</td>
+                        <td rowspan="3">{{ $res->invoice_number }}</td>
+                        <td>{{ $res->inventory_amount }}</td>
                         <td>{{ $res->online_amount }}</td>
                         <td>{{ $res->cash_amount }}</td>
+                        <td rowspan="3">{{ $res->claim_amount }}</td>
+                        <td rowspan="3"><p>{{ $res->notes }}</p></td>
                         <td style="width: 100px;" rowspan="3">
-                            <a href="{{ route('bill.show',$res->bill_id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View Bill">
-                              <i class="fas fa-eye" aria-hidden="true"></i>
-                            </a>
+                            @can('inventory_purchase_edit')
+                              <a href="{{ route('inventory-history.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                              </a>
+                            @endcan
                         </td>
                       </tr>
                       <tr> 
+                        <td>{{ $res->opening_inventory_amount }}</td>
                         <td>{{ $res->opening_online_amount }}</td>
                         <td>{{ $res->opening_cash_amount }}</td>
                       </tr>
                       <tr> 
+                        <td>{{ $res->closing_inventory_amount }}</td>
                         <td>{{ $res->closing_online_amount }}</td>
                         <td>{{ $res->closing_cash_amount }}</td>
                       </tr>
@@ -143,6 +153,14 @@
                     </tr>
                   @endif
                   </tbody>
+                  <!-- <thead>
+                    <tr>
+                      <th colspan="2">Total Inventory</th>
+                      <th>{{ $invest_inventory_amount }}</th>
+                      <th>{{ $invest_online_amount }}</th>
+                      <th>{{ $invest_cash_amount }}</th>
+                    </tr>
+                  </thead> -->
                 </table>
               </div>
               <!-- /.card-body -->

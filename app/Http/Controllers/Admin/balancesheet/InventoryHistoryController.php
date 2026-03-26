@@ -12,28 +12,28 @@ use Spatie\Permission\Models\Permission;
 use App\Models\BalanceSheetTransactions;
 use Validator;
 
-class BalanceSheetController extends Controller{
+class InventoryHistoryController extends Controller{
 
     public function __construct(){
-        $this->middleware('permission:balance_sheet_view|balance_sheet_create|balance_sheet_edit|balance_sheet_delete', ['only' => ['index','store']]);
-        $this->middleware('permission:balance_sheet_create', ['only' => ['create','store']]);
-        $this->middleware('permission:balance_sheet_edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:balance_sheet_delete', ['only' => ['destroy']]);
-        $this->title = 'Balance Sheets';
-        $this->slug = route('balance-sheet.index');
+        $this->middleware('permission:inventory_purchase_view|inventory_purchase_create|inventory_purchase_edit|inventory_purchase_delete', ['only' => ['index','store']]);
+        $this->middleware('permission:inventory_purchase_create', ['only' => ['create','store']]);
+        $this->middleware('permission:inventory_purchase_edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:inventory_purchase_delete', ['only' => ['destroy']]);
+        $this->title = 'Inventory History';
+        $this->slug = route('inventory-history.index');
     }
 
     ### List View
     public function index(Request $request){
         $serach_data = [];
-        $response =  BalanceSheetTransactions::where('deleted_at', '=', NULL)->whereIn('purpose', [4, 5])->orderBy('id', 'desc');
+        $response =  BalanceSheetTransactions::where('deleted_at', '=', NULL)->orderBy('id', 'desc')->where('purpose', 1);
 
         // --- Filters --
-        if ($request->filled('purpose')) {
-            $response->where('purpose', $request->purpose);
-            $serach_data['purpose'] = $request->purpose;
+        if ($request->filled('invoice_number')) {
+            $response->where('invoice_number', 'LIKE', '%' . $request->invoice_number . '%');
+            $serach_data['invoice_number'] = $request->invoice_number;
         }
-
+        
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $response->whereBetween('entry_date', [$request->start_date, $request->end_date]);
             $serach_data['start_date'] = $request->start_date;
@@ -50,14 +50,9 @@ class BalanceSheetController extends Controller{
         $rows = (clone $response)->paginate(10);
 
         /* Purpose = 1 (Invest) */
-        $invest_inventory_amount = (clone $response)->where('purpose', 4)->sum('inventory_amount');
-        $invest_online_amount    = (clone $response)->where('purpose', 4)->sum('online_amount');
-        $invest_cash_amount      = (clone $response)->where('purpose', 4)->sum('cash_amount');
-
-        /* Purpose = 2 (Withdraw) */
-        $withdaraw_inventory_amount = (clone $response)->where('purpose', 5)->sum('inventory_amount');
-        $withdaraw_online_amount    = (clone $response)->where('purpose', 5)->sum('online_amount');
-        $withdaraw_cash_amount      = (clone $response)->where('purpose', 5)->sum('cash_amount');
+        $invest_inventory_amount = (clone $response)->where('purpose', 1)->sum('inventory_amount');
+        $invest_online_amount    = (clone $response)->where('purpose', 1)->sum('online_amount');
+        $invest_cash_amount      = (clone $response)->where('purpose', 1)->sum('cash_amount');
 
         $metadata = array(
             'page_title' => $this->title,
@@ -75,7 +70,7 @@ class BalanceSheetController extends Controller{
             ),
         );
         
-        return view('admin.pages.balance-sheet.list', compact('rows', 'metadata', 'invest_inventory_amount', 'invest_online_amount', 'invest_cash_amount', 'withdaraw_inventory_amount', 'withdaraw_online_amount', 'withdaraw_cash_amount'));
+        return view('admin.pages.inventory-history.list', compact('rows', 'metadata', 'invest_inventory_amount', 'invest_online_amount', 'invest_cash_amount'));
     }
 
     ### Create View
@@ -99,27 +94,36 @@ class BalanceSheetController extends Controller{
                 )
             ),
         );
-        return view('admin.pages.balance-sheet.form', compact('metadata'));
+        return view('admin.pages.inventory-history.form', compact('metadata'));
     }
 
     ### Store Data
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
             'entry_date' => 'required',
-            'purpose' => 'required',
+            'invoice_number' => 'required',
             'inventory_amount' => 'required|numeric|min:0',
             'online_amount' => 'required|numeric|min:0',
-            'cash_amount' => 'required|numeric|min:0',
+            'claim_amount' => 'required|numeric|min:0',
         ]); 
 
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
-
+            $purpose = 1;
             $inventory_amount = $request->inventory_amount;
             $online_amount = $request->online_amount;
-            $cash_amount = $request->cash_amount;
-            $purpose = $request->purpose;
+            $claim_amount = $request->claim_amount;
+            $total_inventory_amount = $online_amount + $claim_amount;
+            if($inventory_amount != $total_inventory_amount){
+                $flash_data = array(
+                    'status'  => 'error',
+                    'message' => 'Inventory amount will be same as total amount online or claim .',
+                );
+
+                Session::put('flash_data', $flash_data); 
+                return redirect($this->slug);
+            }
 
             $data = $request->all();
             $data['financial_year'] = config('config.financial_year');
@@ -127,76 +131,64 @@ class BalanceSheetController extends Controller{
             $opening_inventory_amount = 0;
             $opening_online_amount = 0;
             $opening_cash_amount = 0;
+            //Only set previous data
+            $profit_amount = 0;
+            $opening_profit_amount = 0;
+            $closing_profit_amount = 0;
             $details = BalanceSheetTransactions::where('is_active', 1)->where('deleted_at', '=', NULL)->latest()->first();
+            if($details){
+                if($details->closing_online_amount < $online_amount){
+                    $flash_data = array(
+                        'status'  => 'error',
+                        'message' => 'Insufficient funds avalible in online.',
+                    );
 
+                    Session::put('flash_data', $flash_data); 
+                    return redirect($this->slug);
+                }
+            }else{
+                $flash_data = array(
+                    'status'  => 'error',
+                    'message' => 'Insufficient funds avalible in online.',
+                );
+
+                Session::put('flash_data', $flash_data); 
+                return redirect($this->slug);
+            }
             if($details){
                 $opening_inventory_amount = $details->closing_inventory_amount ?? 0;
                 $opening_online_amount = $details->closing_online_amount ?? 0;
-                $opening_cash_amount = $details->closing_cash_amount ?? 0;
+                $opening_cash_amount = $details->opening_cash_amount ?? 0;
+                $closing_cash_amount = $details->closing_cash_amount ?? 0;
             }
 
-            if($purpose == 4){
+            if($purpose == 1){
                 $closing_inventory_amount = $opening_inventory_amount + $inventory_amount;
-                $closing_online_amount = $opening_online_amount + $online_amount;
-                $closing_cash_amount = $opening_cash_amount + $cash_amount;
-            }
-
-            if($purpose == 5){
-                $closing_inventory_amount = $opening_inventory_amount - $inventory_amount;
                 $closing_online_amount = $opening_online_amount - $online_amount;
-                $closing_cash_amount = $opening_cash_amount - $cash_amount;
             }
 
-            $total_amount = $closing_inventory_amount + $closing_online_amount + $closing_cash_amount;
+            //$total_amount = $closing_inventory_amount + $closing_online_amount + $closing_cash_amount;
 
-            $flash_data = [];
-            switch (true) {
-                case ($total_amount < 0):
-                    $flash_data = array(
-                        'status'  => 'error',
-                        'message' => 'Total amount cannot be negative.',
-                    );
-                    break;
-                case ($closing_inventory_amount < 0):
-                    $flash_data = array(
-                        'status'  => 'error',
-                        'message' => 'Inventory amount cannot be negative.',
-                    );
-                    break;
-                case ($closing_cash_amount < 0):
-                    $flash_data = array(
-                        'status'  => 'error',
-                        'message' => 'Cash amount cannot be negative.',
-                    );
-                    break;
-                case ($closing_online_amount < 0):
-                    $flash_data = array(
-                        'status'  => 'error',
-                        'message' => 'Online amount cannot be negative.',
-                    );
-                    break;
-            }
-
-            if(empty($flash_data)){
-                $data['opening_inventory_amount'] = $opening_inventory_amount;
-                $data['opening_online_amount'] = $opening_online_amount;
-                $data['opening_cash_amount'] = $opening_cash_amount;
-                $data['closing_inventory_amount'] = $closing_inventory_amount;
-                $data['closing_online_amount'] = $closing_online_amount;
-                $data['closing_cash_amount'] = $closing_cash_amount;
-
-                $created = BalanceSheetTransactions::query()->create($data);
-                if($created){
-                    $flash_data = array(
-                        'status' => 'success',
-                        'message' => $this->title.' successfully created.',
-                    );
-                }else{
-                    $flash_data = array(
-                        'status' => 'error',
-                        'message' => 'Something went wrong, try again.',
-                    );
-                }
+            $data['purpose'] = 1;
+            $data['opening_inventory_amount'] = $opening_inventory_amount;
+            $data['opening_online_amount'] = $opening_online_amount;
+            $data['opening_cash_amount'] = $opening_cash_amount;
+            $data['closing_inventory_amount'] = $closing_inventory_amount;
+            $data['closing_online_amount'] = $closing_online_amount;
+            $data['closing_cash_amount'] = $closing_cash_amount;
+            $data['claim_amount'] = $claim_amount;
+            
+            $created = BalanceSheetTransactions::query()->create($data);
+            if($created){
+                $flash_data = array(
+                    'status' => 'success',
+                    'message' => $this->title.' successfully created.',
+                );
+            }else{
+                $flash_data = array(
+                    'status' => 'error',
+                    'message' => 'Something went wrong, try again.',
+                );
             }
 
             Session::put('flash_data', $flash_data); 
@@ -227,7 +219,7 @@ class BalanceSheetController extends Controller{
         );
         
         $details = BalanceSheetTransactions::find($id);
-        return view('admin.pages.balance-sheet.form', compact('details', 'metadata'));
+        return view('admin.pages.inventory-history.form', compact('details', 'metadata'));
     }
 
     ### Update Data

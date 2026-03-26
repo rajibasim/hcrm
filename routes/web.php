@@ -61,7 +61,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => '/admin/managebill'], function () {
         // Bill Entry
         Route::resource('bill', App\Http\Controllers\Admin\bill\BillEntryController::class);
-        Route::resource('payment-history', App\Http\Controllers\Admin\bill\PaymentHistoryController::class);
+        Route::resource('bil-payment-history', App\Http\Controllers\Admin\bill\PaymentHistoryController::class);
     });
     ### Bill Entry
 
@@ -69,6 +69,20 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => '/admin/managebalancesheet'], function () {
         // Balance Sheet
         Route::resource('balance-sheet', App\Http\Controllers\Admin\balancesheet\BalanceSheetController::class);
+        //Inventory purchase
+        Route::resource('inventory-history', App\Http\Controllers\Admin\balancesheet\InventoryHistoryController::class);
+        //Inventory billed
+        Route::resource('inventory-billed', App\Http\Controllers\Admin\balancesheet\InventoryBilledController::class);
+        // Balance Transfer
+        Route::resource('balance-transfer', App\Http\Controllers\Admin\balancesheet\BalanceTransferController::class);
+        // Balance Report
+        Route::resource('payment-history', App\Http\Controllers\Admin\balancesheet\PaymentHistoryController::class);
+        // Credit Report
+        Route::resource('credit-report', App\Http\Controllers\Admin\balancesheet\CreditReportController::class);
+        // Credit Report
+        Route::resource('credit-history', App\Http\Controllers\Admin\balancesheet\CreditHistoryController::class);
+        // Expenditure History
+        Route::resource('expenditure-history', App\Http\Controllers\Admin\balancesheet\ExpenditureHistoryController::class);
     });
     ### Balance Sheet
 });

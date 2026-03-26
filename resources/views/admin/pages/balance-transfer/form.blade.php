@@ -44,50 +44,55 @@
                 <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
               </div>
               <!-- /.card-header -->
-              <form id="dataForm" method="post" action="{{ isset($details->id) && $details->id ? route('balance-sheet.update', $details->id) : route('balance-sheet.store') }}" autocomplete="off" enctype="multipart/form-data">
-                @if(isset($details->id) && $details->id)
-                  <input name="_method" type="hidden" value="PATCH">
-                @endif
+              <form id="dataForm" method="post" action="{{ route('balance-transfer.store') }}" autocomplete="off" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="purpose" value="3">
                 <div class="card-body">
                   <div class="row">
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Entry Date </label>
-                        <input type="text" class="form-control datepicker3" placeholder="Entry Date" name="entry_date" value="{{ old('entry_date', isset($details->entry_date) && $details->entry_date ? $details->entry_date : '') }}" required="">
+                        <input type="text" class="form-control datepicker3" placeholder="Entry Date" name="entry_date" value="{{ old('entry_date') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
-                        <label>Purpose</label>
-                        <select class="form-control" name="purpose" id="purpose">
+                        <label>Type</label>
+                        <select class="form-control" name="type" id="type">
                           <option value="">Please Select</option>
-                            <option value="4" {{ isset($details->purpose) && $details->purpose == 4 ? 'selected' : '' }}>Invest</option>
-                            <option value="5" {{ isset($details->purpose) && $details->purpose == 5 ? 'selected' : '' }}>Withdraw</option>
+                            <option value="3">Cash to Online</option>
+                            <option value="4">Online to Cash</option>
                         </select>
                       </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4" style="display: none;">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Inventory Amount</label>
-                        <input type="number" class="form-control" placeholder="Inventory Amount" name="inventory_amount" id="inventory_amount" value="{{ old('inventory_amount', isset($details->inventory_amount) && $details->inventory_amount ? $details->inventory_amount : '') }}" required="">
+                        <input type="number" class="form-control" placeholder="Inventory Amount" name="inventory_amount" id="inventory_amount" value="{{ old('inventory_amount', isset($details->inventory_amount) && $details->inventory_amount ? $details->inventory_amount : '0') }}" required="" disabled="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Online Amount</label>
-                        <input type="number" class="form-control" placeholder="Online Amount" name="online_amount" value="{{ old('online_amount', isset($details->online_amount) && $details->online_amount ? $details->online_amount : '') }}" required="">
+                        <input type="number" class="form-control" placeholder="Online Amount" name="online_amount" value="{{ old('online_amount', isset($details->closing_online_amount) && $details->closing_online_amount ? $details->closing_online_amount : '') }}" required="" disabled="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Cash Amount</label>
-                        <input type="number" class="form-control" placeholder="Cash Amount" name="cash_amount" value="{{ old('cash_amount', isset($details->cash_amount) && $details->cash_amount ? $details->cash_amount : '') }}" required="">
+                        <input type="number" class="form-control" placeholder="Cash Amount" name="cash_amount" value="{{ old('cash_amount', isset($details->closing_cash_amount) && $details->closing_cash_amount ? $details->closing_cash_amount : '') }}" required="" disabled="">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- text input -->
+                      <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" class="form-control" placeholder="Amount" name="amount" value="{{ old('amount', isset($details->amount) && $details->amount ? $details->amount : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -135,20 +140,10 @@ $(document).ready(function() {
           entry_date: {
             required: true,
           },
-          purpose: {
+          type: {
             required: true,
           },
-          inventory_amount: {
-            required: true,
-            number: true,
-            min: 0,
-          },
-          online_amount: {
-            required: true,
-            number: true,
-            min: 0,
-          },
-          cash_amount: {
+          amount: {
             required: true,
             number: true,
             min: 0,
@@ -164,19 +159,6 @@ $(document).ready(function() {
         },
         unhighlight: function (element, errorClass, validClass) {
           $(element).removeClass('is-invalid');
-        }
-    });
-
-    @if(isset($details->id) && $details->id)
-      $('input, select, textarea, button').prop('disabled', true);
-      $("#btnSubmit").hide();
-    @endif
-
-    $('#purpose').on('change', function () {
-        if ($(this).val() == 5) {
-            $('#inventory_amount').val(0).prop('readonly', true);
-        } else {
-            $('#inventory_amount').prop('readonly', false);
         }
     });
 });

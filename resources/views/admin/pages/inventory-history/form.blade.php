@@ -44,7 +44,7 @@
                 <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
               </div>
               <!-- /.card-header -->
-              <form id="dataForm" method="post" action="{{ isset($details->id) && $details->id ? route('balance-sheet.update', $details->id) : route('balance-sheet.store') }}" autocomplete="off" enctype="multipart/form-data">
+              <form id="dataForm" method="post" action="{{ isset($details->id) && $details->id ? route('inventory-history.update', $details->id) : route('inventory-history.store') }}" autocomplete="off" enctype="multipart/form-data">
                 @if(isset($details->id) && $details->id)
                   <input name="_method" type="hidden" value="PATCH">
                 @endif
@@ -59,21 +59,17 @@
                       </div>
                     </div>
                     <div class="col-sm-4">
-                      <!-- select -->
+                      <!-- text input -->
                       <div class="form-group">
-                        <label>Purpose</label>
-                        <select class="form-control" name="purpose" id="purpose">
-                          <option value="">Please Select</option>
-                            <option value="4" {{ isset($details->purpose) && $details->purpose == 4 ? 'selected' : '' }}>Invest</option>
-                            <option value="5" {{ isset($details->purpose) && $details->purpose == 5 ? 'selected' : '' }}>Withdraw</option>
-                        </select>
+                        <label>Invoice Number</label>
+                        <input type="number" class="form-control" placeholder="Invoice Number" name="invoice_number" value="{{ old('invoice_number', isset($details->invoice_number) && $details->invoice_number ? $details->invoice_number : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
                         <label>Inventory Amount</label>
-                        <input type="number" class="form-control" placeholder="Inventory Amount" name="inventory_amount" id="inventory_amount" value="{{ old('inventory_amount', isset($details->inventory_amount) && $details->inventory_amount ? $details->inventory_amount : '') }}" required="">
+                        <input type="number" class="form-control" placeholder="Inventory Amount" name="inventory_amount" value="{{ old('inventory_amount', isset($details->inventory_amount) && $details->inventory_amount ? $details->inventory_amount : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -86,8 +82,8 @@
                     <div class="col-sm-4">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Cash Amount</label>
-                        <input type="number" class="form-control" placeholder="Cash Amount" name="cash_amount" value="{{ old('cash_amount', isset($details->cash_amount) && $details->cash_amount ? $details->cash_amount : '') }}" required="">
+                        <label>Claim Amount</label>
+                        <input type="number" class="form-control" placeholder="Claim Amount" name="claim_amount" value="{{ old('claim_amount', isset($details->claim_amount) && $details->claim_amount ? $details->claim_amount : '') }}" required="">
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -102,7 +98,7 @@
                 <!-- /.card-body -->
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary" id="btnSubmit">Submit</button>
-                  <a href="{{ route('balance-sheet.index') }}" class="btn btn-danger">Back</a>
+                  <a href="{{ route('inventory-history.index') }}" class="btn btn-danger">Back</a>
                 </div>
               </form>
             </div>
@@ -171,14 +167,6 @@ $(document).ready(function() {
       $('input, select, textarea, button').prop('disabled', true);
       $("#btnSubmit").hide();
     @endif
-
-    $('#purpose').on('change', function () {
-        if ($(this).val() == 5) {
-            $('#inventory_amount').val(0).prop('readonly', true);
-        } else {
-            $('#inventory_amount').prop('readonly', false);
-        }
-    });
 });
 </script>
 @endsection

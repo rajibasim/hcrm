@@ -15,6 +15,8 @@ use App\Models\DeliveryStatus;
 use App\Models\SalesPerson;
 use App\Models\PaymentHistory;
 use App\Models\StatusHistory;
+use App\Models\BalanceSheetTransactions;
+use App\Models\User;
 use Validator;
 
 class BillEntryController extends Controller{
@@ -30,8 +32,15 @@ class BillEntryController extends Controller{
 
     ### List View
     public function index(Request $request){
+
+        $sales_person_id = intval(auth()->user()->sales_person_id);
+
         $serach_data = [];
         $response = Bill::where('deleted_at', '=', NULL)->with('customer')->with('DeliveryStatus')->with('SalesPerson')->orderBy('id', 'desc');
+
+        if(isset($sales_person_id) && intval($sales_person_id) > 0){
+            $response->where('sales_person_id', $sales_person_id);
+        }
         
         // --- Filters ---
         if ($request->filled('bill_number')) {
@@ -140,6 +149,36 @@ class BillEntryController extends Controller{
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
+
+            if($request->balance_amount_checker < 0){ 
+                return redirect()->back();
+            }
+
+            $opening_inventory_amount = 0;
+            $opening_online_amount = 0;
+            $opening_cash_amount = 0;
+            $closing_online_amount = 0;
+            $closing_cash_amount = 0;
+            $details = BalanceSheetTransactions::where('is_active', 1)->where('deleted_at', '=', NULL)->latest()->first();
+
+            if($details){
+                $opening_inventory_amount = $details->closing_inventory_amount ?? 0;
+                $opening_online_amount = $details->opening_online_amount ?? 0;
+                $opening_cash_amount = $details->opening_cash_amount ?? 0;
+                $closing_online_amount = $details->closing_online_amount ?? 0;
+                $closing_cash_amount = $details->closing_cash_amount ?? 0;
+            }
+
+            if($opening_inventory_amount == 0 || isset($details->closing_inventory_amount) && $details->closing_inventory_amount < $request->billed_amount){
+                $flash_data = array(
+                    'status'  => 'error',
+                    'message' => 'Insufficient inventory avalible in store.',
+                );
+
+                Session::put('flash_data', $flash_data); 
+                return redirect($this->slug);
+            }
+
             $data = array(
                 'financial_year' => config('config.financial_year'),
                 'bill_number' => $request->bill_number, 
@@ -215,14 +254,28 @@ class BillEntryController extends Controller{
 
                 $created = StatusHistory::query()->create($status_data);
 
-                //update bill table
-                /*$billdata['updated_by'] = updated_by();
-                $billdata['online_amount'] = $online_amount;
-                $billdata['cash_amount'] = $cash_amount;
-                $update = Bill::find($bill_id);
-                $update = $update->update($billdata);*/
+                //insert balance sheet transuction 
+                $billed_amount = $request->billed_amount ?? 0;
+                $closing_inventory_amount = $opening_inventory_amount - $billed_amount;
+                $trnsData = array(
+                    'financial_year' => config('config.financial_year'),
+                    'entry_date' => $request->invoice_date,
+                    'purpose' => 6,
+                    'bill_id' => $bill_id,
+                    'inventory_amount' => $billed_amount,
+                    'opening_inventory_amount' => $opening_inventory_amount,
+                    'closing_inventory_amount' => $closing_inventory_amount,
+                    'opening_online_amount' => $opening_online_amount,
+                    'opening_cash_amount' => $opening_cash_amount,
+                    'closing_online_amount' => $closing_online_amount,
+                    'closing_cash_amount' => $closing_cash_amount,
+                    'updated_by' => updated_by(),
+                    'created_by' => created_by(),
+                );
 
-                if($created){
+                $transCreated = BalanceSheetTransactions::query()->create($trnsData);
+
+                if($transCreated){
                     $flash_data = array(
                         'status' => 'success',
                         'message' => $this->title.' successfully created.',
@@ -295,6 +348,11 @@ class BillEntryController extends Controller{
         if ($validator->fails()) { 
             return redirect()->back()->withInput()->withErrors($validator); 
         }else{
+
+            if($request->balance_amount_checker < 0){ 
+                return redirect()->back();
+            }
+
             $data = array(
                 'bill_number' => $request->bill_number, 
                 'invoice_date' => $request->invoice_date, 
@@ -456,7 +514,7 @@ class BillEntryController extends Controller{
         $DeliveryStatus = DeliveryStatus::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('name', 'asc')->get();
         $customer = Customer::where('deleted_at', '=', NULL)->where('is_active', '=', 1)->orderBy('id', 'asc')->get();
         $SalesPerson = SalesPerson::where('is_active', '=', 1)->where('deleted_at', '=', NULL)->get();
-        $paymentHistory = PaymentHistory::where('deleted_at', '=', NULL)->where('bill_id', '=', $id)->get();
+        $paymentHistory = PaymentHistory::where('bill_id', '=', $id)->withTrashed()->get();
         return view('admin.pages.bill.show', compact('details', 'metadata', 'customer', 'DeliveryStatus', 'SalesPerson', 'paymentHistory'));
     }
 }

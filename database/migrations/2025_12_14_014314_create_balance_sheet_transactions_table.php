@@ -11,11 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('balance_sheets', function (Blueprint $table) {
+        Schema::create('balance_sheet_transactions', function (Blueprint $table) {
             $table->id();
             $table->integer('financial_year')->default('0');
             $table->date('entry_date')->nullable();
-            $table->enum('purpose', ['1', '2'])->nullable()->comment('1 => Invest, 2 => Withdraw');
+            $table->tinyInteger('purpose')->nullable()->comment('1 => Inventory(Add), 2 => Expenditure, 3 => Balance Transfer, 4 => Invest, 5 => Withdraw, 6 => Bill Inventory(Deduct), 7 => Bill Payment');
+            $table->tinyInteger('type')->nullable()->comment('1 => Online, 2 => Cash, 4 => Cash to Online, 4 =>  Online to Cash');
+            $table->tinyInteger('expenditure_purpose')->nullable()->comment('1 => Damage, 2 => Daliy Expenses, 3 => Salary, 4 => Rent, 5 => Oil, 6 => Other');
+            $table->integer('invoice_number')->nullable();
+            $table->integer('bill_id')->nullable();
             $table->decimal('inventory_amount', 15, 2)->default(0.00);
             $table->decimal('online_amount', 15, 2)->default(0.00);
             $table->decimal('cash_amount', 15, 2)->default(0.00);
@@ -25,7 +29,7 @@ return new class extends Migration
             $table->decimal('closing_inventory_amount', 15, 2)->default(0.00);
             $table->decimal('closing_online_amount', 15, 2)->default(0.00);
             $table->decimal('closing_cash_amount', 15, 2)->default(0.00);
-            $table->decimal('total_amount', 15, 2)->default(0.00);
+            $table->decimal('claim_amount', 15, 2)->default(0.00);
             $table->text('notes')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
@@ -41,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('balance_sheets');
+        Schema::dropIfExists('balance_sheet_transactions');
     }
 };

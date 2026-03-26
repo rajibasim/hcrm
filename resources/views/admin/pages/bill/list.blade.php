@@ -57,7 +57,7 @@
                         <input type="text" class="form-control" placeholder="Bill No" name="bill_number" value="{{ isset($serach_data['bill_number']) && $serach_data['bill_number'] ? $serach_data['bill_number'] : '' }}">
                       </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4" style="display: {{ intval(auth()->user()->sales_person_id) > 0 ? 'none' : '' }}">
                       <!-- select -->
                       <div class="form-group">
                         <select class="form-control select2" name="sales_person_id" id="sales_person_id" >
@@ -154,8 +154,8 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                     <tr> 
-                      <td>{{ $res->bill_number }}</td>
-                      <td>{{ $res->customer->party_name }}</td>
+                      <td><a href="{{ route('bill.show',$res->id) }}">{{ $res->bill_number }}</a></td>
+                      <td><a href="{{ route('customer.show',$res->customer->id) }}">{{ $res->customer->party_name }}</a></td>
                       <td>{{ $res->invoice_date }}</td>
                       <td>{{ $res->DeliveryStatus->name }}</td>
                       <td>{{ $res->SalesPerson->name }}</td>
@@ -182,7 +182,7 @@
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="5">No record found.</td>
+                      <td colspan="9">No record found.</td>
                     </tr>
                   @endif
                   </tbody>

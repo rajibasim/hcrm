@@ -50,17 +50,33 @@ class PermissionGroupSeeder extends Seeder
                 'label' => 'Balance Sheet'
             ],
             [
+                'name' => 'bill_payment_history',
+                'label' => 'Bill Payment History'
+            ],
+            [
                 'name' => 'payment_history',
                 'label' => 'Payment History'
             ],
             [
-                'name' => 'balance_report',
-                'label' => 'Balance Report'
-            ],
-            [
                 'name' => 'balance_transfer',
                 'label' => 'Balance Transfer'
-            ]
+            ],
+            [
+                'name' => 'credit_report',
+                'label' => 'Credit Report'
+            ],
+            [
+                'name' => 'inventory_purchase',
+                'label' => 'Inventory Purchase'
+            ],
+            [
+                'name' => 'inventory_billed',
+                'label' => 'Inventory Billed'
+            ],
+            [
+                'name' => 'expenditure_history',
+                'label' => 'Expenditure History'
+            ],
         ];
 
         $counterForUUID = 1;

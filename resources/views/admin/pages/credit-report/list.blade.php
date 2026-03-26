@@ -51,19 +51,30 @@
               <div class="card-body">
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-sm-3">
-                      <!-- select -->
-                      <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Bill Number" name="bill_number" value="{{ isset($serach_data['bill_number']) && $serach_data['bill_number'] ? $serach_data['bill_number'] : '' }}" >
-                      </div>
+                    <!-- <div class="col-3">
+                      <select class="form-control select2" name="purpose" id="purpose">
+                        <option value="">Please select</option>
+                        <option value="1" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 1 ? 'selected' : '' }}>Asset</option>
+                        <option value="2" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 2 ? 'selected' : '' }}>Liability</option>
+                        <option value="3" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 3 ? 'selected' : '' }}>Equity</option>
+                        <option value="4" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 4 ? 'selected' : '' }}>Income</option>
+                        <option value="5" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 5 ? 'selected' : '' }}>Expense</option>
+                      </select>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-3">
+                      <select class="form-control select2" name="type" id="type">
+                        <option value="">Please select</option>
+                        <option value="1" {{ isset($serach_data['type']) && $serach_data['type'] == 1 ? 'selected' : '' }}>Credit</option>
+                        <option value="2" {{ isset($serach_data['type']) && $serach_data['type'] == 2 ? 'selected' : '' }}>Debit</option>
+                      </select>
+                    </div> -->
+                    <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
                         <input type="text" class="form-control datepicker3" placeholder="Start Date" name="start_date" value="{{ isset($serach_data['start_date']) && $serach_data['start_date'] ? $serach_data['start_date'] : '' }}" >
                       </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                       <!-- select -->
                       <div class="form-group">
                         <input type="text" class="form-control datepicker3" placeholder="End Date" name="end_date" value="{{ isset($serach_data['end_date']) && $serach_data['end_date'] ? $serach_data['end_date'] : '' }}" >
@@ -92,56 +103,38 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('inventory_purchase_create')
-                <div class="card-header">
-                  <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
-                    <div class="float-right">
-                        <a href="{{ route('inventory-history.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
-                          <i class="fa fa-plus" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-              @endcan
               <!-- /.card-header -->
               <div class="card-body">
-                <table class="table table-bordered">
+                <table class="table table-bordered" style="text-align: center;">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Bill No</th>
-                      <th>Online</th>
-                      <th>Cash</th>
-                      <th>Action</th>
+                      <th>Billed Amount</th>
+                      <th colspan="3">Adjust Amount</th>
+                      <th colspan="2">Paid Amount</th>
+                      <th>Current Due</th>
                     </tr>
                   </thead>
                   <tbody>
-                  @if(isset($rows) && !$rows->isEmpty())
-                    @foreach ( $rows as $key => $res )
-                      <tr> 
-                        <td rowspan="3">{{ $res->entry_date }}</td>
-                        <td rowspan="3">{{ $res->billData->bill_number }}</td>
-                        <td>{{ $res->online_amount }}</td>
-                        <td>{{ $res->cash_amount }}</td>
-                        <td style="width: 100px;" rowspan="3">
-                            <a href="{{ route('bill.show',$res->bill_id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View Bill">
-                              <i class="fas fa-eye" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                      </tr>
-                      <tr> 
-                        <td>{{ $res->opening_online_amount }}</td>
-                        <td>{{ $res->opening_cash_amount }}</td>
-                      </tr>
-                      <tr> 
-                        <td>{{ $res->closing_online_amount }}</td>
-                        <td>{{ $res->closing_cash_amount }}</td>
-                      </tr>
-                    @endforeach
-                  @else
-                    <tr> 
-                      <td colspan="7">No record found.</td>
+                    <tr>
+                      <td rowspan="3">{{ $billed_amount }}</td>
+                      <td>Damage Amount</td>
+                      <td>Return Amount</td>
+                      <td>Adjusment Amount</td>
+                      <td>Online</td>
+                      <td>Cash</td>
+                      <td rowspan="3">{{ $balance_amount }}</td>
                     </tr>
-                  @endif
+                    <tr>
+                      <td>{{ $damage_amount }}</td>
+                      <td>{{ $return_amount }}</td>
+                      <td>{{ $adjusment_amount }}</td>
+                      <td>{{ $online_amount }}</td>
+                      <td>{{ $cash_amount }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="3">{{ number_format($damage_amount + $return_amount + $adjusment_amount, 2) }}</td>
+                      <td colspan="2">{{ number_format($online_amount + $cash_amount, 2) }}</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

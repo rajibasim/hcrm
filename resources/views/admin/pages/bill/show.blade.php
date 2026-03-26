@@ -218,8 +218,22 @@
                                     @endif
                                   </td>
                                   <td width="10%">
-                                      <a href="javascript:void(0);" class="btn btn-warning btn-sm" id="{{ isset($rres->id) ? $rres->id : 0 }}">
-                                      <i class="fa fa-ban"></i></a>
+                                    @if($rres->is_active == 0)
+                                      @if($rres->deleted_at)
+                                        <a href="javascript:void(0);" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Rejected">
+                                            <i class="fas fa-times" aria-hidden="true"></i>
+                                        </a>
+                                      @else 
+                                        <a href="javascript:void(0);" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Waiting for Aprove">
+                                          <i class="fa fa-ban" aria-hidden="true"></i>
+                                        </a>
+                                      @endif
+                                    @else
+                                      <a href="javascript:void(0);" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Aproved">
+                                          <i class="fas fa-check" aria-hidden="true"></i>
+                                      </a>
+                                      <input type="hidden" name="accepted_amount" class="accepted_amount" value="{{ $rres->balance_amount }}">
+                                    @endif
                                   </td>
                                 </tr>
                               @endforeach
@@ -259,8 +273,8 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  <a href="{{ route('bill.index') }}" class="btn btn-danger">Reset</a>
+                  <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+                  <a href="{{ route('bill.index') }}" class="btn btn-danger">Back</a>
                 </div>
               </form>
             </div>
@@ -441,6 +455,12 @@ $(document).ready(function() {
             offline_total = offline_total + parseFloat($(offline[i]).val());
         }
 
+        var accepted_amount = 0;
+        var ac_amount = $(".accepted_amount");
+        for(var i = 0; i < ac_amount.length; i++){
+            accepted_amount = accepted_amount + parseFloat($(ac_amount[i]).val());
+        }
+
         var billed_amount_hidden = parseFloat($('.billed_amount_hidden').val());
         var return_amount_hidden = parseFloat($('.return_amount_hidden').val());
         var damage_amount_hidden = parseFloat($('.damage_amount_hidden').val());
@@ -450,7 +470,9 @@ $(document).ready(function() {
 
         var total = billed_amount_hidden - (online_total + offline_total + return_amount_hidden + damage_amount_hidden + adjusment_amount_hidden);
 
-        $("#balance_amount").html(total.toFixed(2));
+        var new_billed_amount = billed_amount_hidden - (return_amount_hidden + damage_amount_hidden + adjusment_amount_hidden + accepted_amount);
+
+        $("#balance_amount").html(new_billed_amount.toFixed(2));
         $(".balance_amount").val(total);
     }
     

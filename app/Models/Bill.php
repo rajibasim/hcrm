@@ -24,6 +24,9 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property date $delivery_status_update_date
  * @property int $delivery_status_id
  * @property decimal $billed_amount
+ * @property decimal $inventory_amount
+ * @property decimal $profit_amount
+ * @property decimal $profit_mergine
  * @property decimal $damage_amount
  * @property decimal $return_amount
  * @property decimal $adjusment_percent

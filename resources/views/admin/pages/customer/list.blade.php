@@ -132,7 +132,7 @@
                       <td>{{ $res->beat }}</td>
                       <td>{{ $res->channel }}</td>
                       <td>{{ $res->is_active == 1 ? 'Active' : 'In-Active' }}</td>
-                      <td style="width: 100px;">
+                      <td style="width: 140px;">
                         @can('customer_edit')
                           <a href="{{ route('customer.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
                             <i class="fas fa-edit" aria-hidden="true"></i>
@@ -147,6 +147,9 @@
                             @csrf
                           </form>
                         @endcan
+                        <a href="{{ route('customer.show',$res->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="View">
+                          <i class="fas fa-eye" aria-hidden="true"></i>
+                        </a>
                       </td>
                     </tr>
                     @endforeach

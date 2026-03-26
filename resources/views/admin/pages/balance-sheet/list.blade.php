@@ -54,18 +54,8 @@
                     <div class="col-3">
                       <select class="form-control select2" name="purpose" id="purpose">
                         <option value="">Please select</option>
-                        <option value="1" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 1 ? 'selected' : '' }}>Asset</option>
-                        <option value="2" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 2 ? 'selected' : '' }}>Liability</option>
-                        <option value="3" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 3 ? 'selected' : '' }}>Equity</option>
-                        <option value="4" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 4 ? 'selected' : '' }}>Income</option>
-                        <option value="5" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 5 ? 'selected' : '' }}>Expense</option>
-                      </select>
-                    </div>
-                    <div class="col-3">
-                      <select class="form-control select2" name="type" id="type">
-                        <option value="">Please select</option>
-                        <option value="1" {{ isset($serach_data['type']) && $serach_data['type'] == 1 ? 'selected' : '' }}>Credit</option>
-                        <option value="2" {{ isset($serach_data['type']) && $serach_data['type'] == 2 ? 'selected' : '' }}>Debit</option>
+                        <option value="1" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 1 ? 'selected' : '' }}>Invest</option>
+                        <option value="2" {{ isset($serach_data['purpose']) && $serach_data['purpose'] == 2 ? 'selected' : '' }}>Withdraw</option>
                       </select>
                     </div>
                     <div class="col-sm-3">
@@ -119,9 +109,10 @@
                   <thead>
                     <tr>
                       <th>Date</th>
-                      <th>Amount</th>
                       <th>Purpose</th>
-                      <th>Type</th>
+                      <th>Inventory</th>
+                      <th>Online</th>
+                      <th>Cash</th>
                       <th>Note</th>
                       <th>Action</th>
                     </tr>
@@ -129,45 +120,56 @@
                   <tbody>
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
-                    @php
-                      $type_id = $res->purpose;
-                      $typeName = $type_id == 1 ? 'Asset' :
-                                  ($type_id == 2 ? 'Liability' :
-                                  ($type_id == 3 ? 'Equity' :
-                                  ($type_id == 4 ? 'Income' :
-                                  ($type_id == 5 ? 'Expense' : 'Unknown'))));
-                    @endphp
-
-                    <tr> 
-                      <td>{{ $res->entry_date }}</td>
-                      <td>{{ $res->amount }}</td>
-                      <td>{{ $typeName }}</td>
-                      <td>{{ $res->type == 1 ? 'Credit' : 'Debit' }}</td>
-                      <td><p>{{ $res->notes }}</p></td>
-                      <td style="width: 100px;">
-                        @can('balance_sheet_create')
-                          <a href="{{ route('balance-sheet.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                          </a>
-                        @endcan
-                        @can('balance_sheet_delete')
-                          <form id="deleteForm{{ $res->id }}" method="POST" action="{{ route('balance-sheet.destroy', $res->id) }}" accept-charset="UTF-8" style="display:inline">
-                              <input name="_method" type="hidden" value="DELETE">
-                              <a id="{{ $res->id }}" href="javascript:void(0);" class="btn btn-danger btn-sm single" data-toggle="tooltip" data-placement="top" title="Delete">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
+                      <tr> 
+                        <td rowspan="3">{{ $res->entry_date }}</td>
+                        <td rowspan="3">{{ $res->purpose == 4 ? 'Invest' : 'Withdraw' }}</td>
+                        <td>{{ $res->inventory_amount }}</td>
+                        <td>{{ $res->online_amount }}</td>
+                        <td>{{ $res->cash_amount }}</td>
+                        <td rowspan="3"><p>{{ $res->notes }}</p></td>
+                        <td style="width: 100px;" rowspan="3">
+                            @can('balance_sheet_edit')
+                              <a href="{{ route('balance-sheet.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
                               </a>
-                            @csrf
-                          </form>
-                        @endcan
-                      </td>
-                    </tr>
+                            @endcan
+                        </td>
+                      </tr>
+                      <tr> 
+                        <td>{{ $res->opening_inventory_amount }}</td>
+                        <td>{{ $res->opening_online_amount }}</td>
+                        <td>{{ $res->opening_cash_amount }}</td>
+                      </tr>
+                      <tr> 
+                        <td>{{ $res->closing_inventory_amount }}</td>
+                        <td>{{ $res->closing_online_amount }}</td>
+                        <td>{{ $res->closing_cash_amount }}</td>
+                      </tr>
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="6">No record found.</td>
+                      <td colspan="8">No record found.</td>
                     </tr>
                   @endif
                   </tbody>
+                  <!-- <thead>
+                    <tr>
+                      <th colspan="2">Total Invest</th>
+                      <th>{{ $invest_inventory_amount }}</th>
+                      <th>{{ $invest_online_amount }}</th>
+                      <th>{{ $invest_cash_amount }}</th>
+                      <th colspan="3">{{ $invest_inventory_amount + $invest_online_amount + $invest_cash_amount }}</th>
+                    </tr>
+                  </thead>
+                  <thead>
+                    <tr>
+                      <th colspan="2">Total withdaraw</th>
+                      <th>{{ $withdaraw_inventory_amount }}</th>
+                      <th>{{ $withdaraw_online_amount }}</th>
+                      <th>{{ $withdaraw_cash_amount }}</th>
+                      <th colspan="3">{{ $withdaraw_inventory_amount + $withdaraw_online_amount + $withdaraw_cash_amount }}</th>
+                    </tr>
+                  </thead> -->
                 </table>
               </div>
               <!-- /.card-body -->

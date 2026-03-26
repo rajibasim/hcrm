@@ -16,5 +16,6 @@ return [
     	'2026-2027' => '2',
     	'2027-2028' => '3',
     ),
-    'financial_year' => 1,  
+    'financial_year' => 1, 
+    'profit_margin' => '3.9', 
 ];

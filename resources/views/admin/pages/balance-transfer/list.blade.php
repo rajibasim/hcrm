@@ -51,11 +51,12 @@
               <div class="card-body">
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-sm-3">
-                      <!-- select -->
-                      <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Bill Number" name="bill_number" value="{{ isset($serach_data['bill_number']) && $serach_data['bill_number'] ? $serach_data['bill_number'] : '' }}" >
-                      </div>
+                    <div class="col-3">
+                      <select class="form-control select2" name="type" id="type">
+                        <option value="">Please select</option>
+                        <option value="3" {{ isset($serach_data['type']) && $serach_data['type'] == 3 ? 'selected' : '' }}>Cash to Online</option>
+                        <option value="4" {{ isset($serach_data['type']) && $serach_data['type'] == 4 ? 'selected' : '' }}>Online to Cash</option>
+                      </select>
                     </div>
                     <div class="col-sm-3">
                       <!-- select -->
@@ -92,11 +93,11 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('inventory_purchase_create')
+              @can('balance_transfer_create')
                 <div class="card-header">
                   <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
                     <div class="float-right">
-                        <a href="{{ route('inventory-history.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
+                        <a href="{{ route('balance-transfer.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -108,9 +109,11 @@
                   <thead>
                     <tr>
                       <th>Date</th>
-                      <th>Bill No</th>
+                      <th>Purpose</th>
+                      <th>Type</th>
                       <th>Online</th>
                       <th>Cash</th>
+                      <th>Note</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -119,13 +122,17 @@
                     @foreach ( $rows as $key => $res )
                       <tr> 
                         <td rowspan="3">{{ $res->entry_date }}</td>
-                        <td rowspan="3">{{ $res->billData->bill_number }}</td>
+                        <td rowspan="3">Transfer</td>
+                        <td rowspan="3">{{ $res->type == 3 ? 'Cash to Online' : 'Online to Cash' }}</td>
                         <td>{{ $res->online_amount }}</td>
                         <td>{{ $res->cash_amount }}</td>
+                        <td rowspan="3"><p>{{ $res->notes }}</p></td>
                         <td style="width: 100px;" rowspan="3">
-                            <a href="{{ route('bill.show',$res->bill_id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View Bill">
-                              <i class="fas fa-eye" aria-hidden="true"></i>
-                            </a>
+                            @can('balance_transfer_edit')
+                              <a href="{{ route('balance-transfer.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                              </a>
+                            @endcan
                         </td>
                       </tr>
                       <tr> 
@@ -139,10 +146,11 @@
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="7">No record found.</td>
+                      <td colspan="8">No record found.</td>
                     </tr>
                   @endif
                   </tbody>
+                  
                 </table>
               </div>
               <!-- /.card-body -->

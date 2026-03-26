@@ -51,11 +51,16 @@
               <div class="card-body">
                 <form method="get" action="" autocomplete="off" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-sm-3">
-                      <!-- select -->
-                      <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Bill Number" name="bill_number" value="{{ isset($serach_data['bill_number']) && $serach_data['bill_number'] ? $serach_data['bill_number'] : '' }}" >
-                      </div>
+                    <div class="col-3">
+                      <select class="form-control" name="expenditure_purpose" id="expenditure_purpose">
+                          <option value="">Please Select</option>
+                            <option value="1" {{ isset($serach_data['expenditure_purpose']) && $serach_data['expenditure_purpose'] == 1 ? 'selected' : '' }}>Damage</option>
+                            <option value="2" {{ isset($serach_data['expenditure_purpose']) && $serach_data['expenditure_purpose'] == 2 ? 'selected' : '' }}>Daliy Expenses</option>
+                            <option value="3" {{ isset($serach_data['expenditure_purpose']) && $serach_data['expenditure_purpose'] == 3 ? 'selected' : '' }}>Salary</option>
+                            <option value="4" {{ isset($serach_data['expenditure_purpose']) && $serach_data['expenditure_purpose'] == 4 ? 'selected' : '' }}>Rent</option>
+                            <option value="5" {{ isset($serach_data['expenditure_purpose']) && $serach_data['expenditure_purpose'] == 5 ? 'selected' : '' }}>Oil</option>
+                            <option value="6" {{ isset($serach_data['expenditure_purpose']) && $serach_data['expenditure_purpose'] == 6 ? 'selected' : '' }}>Other</option>
+                        </select>
                     </div>
                     <div class="col-sm-3">
                       <!-- select -->
@@ -92,11 +97,64 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('inventory_purchase_create')
+              <div class="card-header">
+                <h3 class="card-title">Expenditure Summery</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Total</th>
+                      <th>Damage</th>
+                      <th>Daliy Expenses</th>
+                      <th>Salary</th>
+                      <th>Rent</th>
+                      <th>Oil</th>
+                      <th>Other</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  @if(isset($sumObj) && $sumObj)
+                    @php
+                      $total = $sumObj->damage + $sumObj->daliy_expenses + $sumObj->salary + $sumObj->rent + $sumObj->oil + $sumObj->other;
+                    @endphp
+                    <tr> 
+                      <td>{{ number_format($total, 2) }}</td>
+                      <td>{{ number_format($sumObj->damage, 2) }}</td>
+                      <td>{{ number_format($sumObj->daliy_expenses, 2) }}</td>
+                      <td>{{ number_format($sumObj->salary, 2) }}</td>
+                      <td>{{ number_format($sumObj->rent, 2) }}</td>
+                      <td>{{ number_format($sumObj->oil, 2) }}</td>
+                      <td>{{ number_format($sumObj->other, 2) }}</td>
+                    </tr>
+                  @else
+                    <tr> 
+                      <td colspan="7">No record found.</td>
+                    </tr>
+                  @endif
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card card-primary card-outline">
+              @can('expenditure_history_create')
                 <div class="card-header">
                   <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
                     <div class="float-right">
-                        <a href="{{ route('inventory-history.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
+                        <a href="{{ route('expenditure-history.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -108,9 +166,11 @@
                   <thead>
                     <tr>
                       <th>Date</th>
-                      <th>Bill No</th>
+                      <th>Purpose</th>
+                      <th>Inventory</th>
                       <th>Online</th>
                       <th>Cash</th>
+                      <th>Note</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -119,27 +179,38 @@
                     @foreach ( $rows as $key => $res )
                       <tr> 
                         <td rowspan="3">{{ $res->entry_date }}</td>
-                        <td rowspan="3">{{ $res->billData->bill_number }}</td>
+                        <td rowspan="3">{{ ($res->expenditure_purpose == 1) ? 'Damage' :
+                                           (($res->expenditure_purpose == 2) ? 'Daily Expenses' :
+                                           (($res->expenditure_purpose == 3) ? 'Salary' :
+                                           (($res->expenditure_purpose == 4) ? 'Rent' :
+                                           (($res->expenditure_purpose == 5) ? 'Oil' :
+                                           (($res->expenditure_purpose == 6) ? 'Other' : ''))))) }}</td>
+                        <td>{{ $res->inventory_amount }}</td>
                         <td>{{ $res->online_amount }}</td>
                         <td>{{ $res->cash_amount }}</td>
+                        <td rowspan="3"><p>{{ $res->notes }}</p></td>
                         <td style="width: 100px;" rowspan="3">
-                            <a href="{{ route('bill.show',$res->bill_id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View Bill">
-                              <i class="fas fa-eye" aria-hidden="true"></i>
-                            </a>
+                            @can('balance_sheet_edit')
+                              <a href="{{ route('balance-sheet.edit',$res->id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                              </a>
+                            @endcan
                         </td>
                       </tr>
                       <tr> 
+                        <td>{{ $res->opening_inventory_amount }}</td>
                         <td>{{ $res->opening_online_amount }}</td>
                         <td>{{ $res->opening_cash_amount }}</td>
                       </tr>
                       <tr> 
+                        <td>{{ $res->closing_inventory_amount }}</td>
                         <td>{{ $res->closing_online_amount }}</td>
                         <td>{{ $res->closing_cash_amount }}</td>
                       </tr>
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="7">No record found.</td>
+                      <td colspan="8">No record found.</td>
                     </tr>
                   @endif
                   </tbody>

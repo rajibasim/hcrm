@@ -92,16 +92,6 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary card-outline">
-              @can('inventory_purchase_create')
-                <div class="card-header">
-                  <h3 class="card-title">{{ $metadata['page_title'] }}</h3>
-                    <div class="float-right">
-                        <a href="{{ route('inventory-history.create') }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="New Records">
-                          <i class="fa fa-plus" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-              @endcan
               <!-- /.card-header -->
               <div class="card-body">
                 <table class="table table-bordered">
@@ -109,8 +99,9 @@
                     <tr>
                       <th>Date</th>
                       <th>Bill No</th>
-                      <th>Online</th>
-                      <th>Cash</th>
+                      <th>Inventory</th>
+                      <th>Opening</th>
+                      <th>Closing</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -118,28 +109,21 @@
                   @if(isset($rows) && !$rows->isEmpty())
                     @foreach ( $rows as $key => $res )
                       <tr> 
-                        <td rowspan="3">{{ $res->entry_date }}</td>
-                        <td rowspan="3">{{ $res->billData->bill_number }}</td>
-                        <td>{{ $res->online_amount }}</td>
-                        <td>{{ $res->cash_amount }}</td>
-                        <td style="width: 100px;" rowspan="3">
+                        <td>{{ $res->entry_date }}</td>
+                        <td>{{ $res->billData->bill_number }}</td>
+                        <td>{{ $res->inventory_amount }}</td>
+                        <td>{{ $res->opening_inventory_amount }}</td>
+                        <td>{{ $res->closing_inventory_amount }}</td>
+                        <td style="width: 100px;">
                             <a href="{{ route('bill.show',$res->bill_id) }}" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View Bill">
                               <i class="fas fa-eye" aria-hidden="true"></i>
                             </a>
                         </td>
                       </tr>
-                      <tr> 
-                        <td>{{ $res->opening_online_amount }}</td>
-                        <td>{{ $res->opening_cash_amount }}</td>
-                      </tr>
-                      <tr> 
-                        <td>{{ $res->closing_online_amount }}</td>
-                        <td>{{ $res->closing_cash_amount }}</td>
-                      </tr>
                     @endforeach
                   @else
                     <tr> 
-                      <td colspan="7">No record found.</td>
+                      <td colspan="6">No record found.</td>
                     </tr>
                   @endif
                   </tbody>
